@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12">
+    {% if user.is_authenticated %}
+    <div class="mt-2">
+        <form action="">
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12 scrollable-td" style="background-color: transparent;">
+                            <div class="scrollable-content ">
+                                <h2>Detalles del Ingrediente</h2>
+                                <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+                                <a href="{% url 'ingrediente_list' %}" class="btn btn-primary">Volver a la lista</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+    {% endblock %}
+</script>
+    

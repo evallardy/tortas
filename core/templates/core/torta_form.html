@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12 mt-2 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="col-10 mapa">
+        <table class="col-12" style="background-color: transparent;">
+            <tbody class="col-12" style="background-color: transparent;">
+                <tr class="col-12" style="background-color: transparent;">
+                    <td class="col-12" style="background-color: transparent;">
+                        <div class="col-12">
+                            <h2>{% if object %}Editar{% else %}Nueva{% endif %} Torta</h2>
+                            <form method="post" class="form">
+                                {% csrf_token %}
+                                {{ form.nombre|as_crispy_field }}
+                                {{ form.ingredientes|as_crispy_field }}
+                                {{ form.precio|as_crispy_field }}
+                                <div class="mt-2">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                    <a href="{% url 'catalogo' %}" class="btn btn-secondary">Cancelar</a>
+                                    {% if object %}
+                                        <a href="{% url 'torta_delete' object.pk %}" class="btn btn-danger float-right">Eliminar</a>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_41').addClass('active');
+    {% endblock %}
+</script>
+    

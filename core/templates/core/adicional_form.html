@@ -1,0 +1,42 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12 mt-2 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="col-10 mapa">
+        <table class="col-12" style="background-color: transparent;">
+            <tbody class="col-12" style="background-color: transparent;">
+                <tr class="col-12" style="background-color: transparent;">
+                    <td class="col-12 scrollable-td" style="background-color: transparent;">
+                        <div class="scrollable-content ">
+                            <h2>{% if object %}Editar{% else %}Nuevo{% endif %} Adicional</h2>
+                            <form method="post" class="form">
+                                {% csrf_token %}
+                                {{ form.nombre|as_crispy_field }}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <a href="{% url 'adicional_list' %}" class="btn btn-secondary">Cancelar</a>
+                                {% if object %}
+                                    <a href="{% url 'adicional_delete' object.pk %}" class="btn btn-danger float-right">Eliminar</a>
+                                {% endif %}
+                                </form>
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_43').addClass('active');
+    {% endblock %}
+</script>
+    

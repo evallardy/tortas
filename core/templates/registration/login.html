@@ -1,0 +1,26 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %}
+{% block contenido %}
+<div class="col-12 d-flex justify-content-center">
+    <div class="row col-10 mapa">
+        <div class="card-body">
+            <h2 class="encabezados">Ingresa credenciales</h2>
+            <hr>
+            <form action="" method="post" onkeypress="return anular(event)">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="form-group col-7 mb-0">
+                        {{ form.username|as_crispy_field }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-7 mb-0">
+                        {{ form.password|as_crispy_field }}
+                    </div>
+                </div>
+                <input type="submit" value="Ingresar" class="btn btn-secondary" style="margin-top: 10px;">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

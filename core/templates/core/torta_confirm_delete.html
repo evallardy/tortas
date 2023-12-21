@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12 mt-2 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="col-10 mapa">
+        <table class="col-12" style="background-color: transparent;">
+            <tbody class="col-12" style="background-color: transparent;">
+                <tr class="col-12" style="background-color: transparent;">
+                    <td class="col-12 scrollable-td" style="background-color: transparent;">
+                        <div class="scrollable-content ">
+                            <h2>Confirmar Eliminación</h2>
+                            <p>¿Estás seguro de que deseas eliminar la torta "{{ tortas.nombre }}"?</p>
+                            <form method="post" class="form">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+                                <a href="{% url 'catalogo' %}" class="btn btn-secondary">Cancelar</a>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_41').addClass('active');
+    {% endblock %}
+</script>
+    

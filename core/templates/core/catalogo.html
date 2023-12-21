@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12 mt-2 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="col-11 mapa">
+        <form action="">
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12 scrollable-td" style="background-color: transparent;">
+                            <div class="scrollable-content">
+                                <h2>Lista de Tortas</h2>
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Precio</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for torta in tortas %}
+                                            <tr>
+                                            <td>{{ torta.nombre }}</td>
+                                            <td>{{ torta.precio }}</td>
+                                            <td>
+                                                <a href="{% url 'torta_detail' torta.pk %}" class="btn btn-info btn-sm">
+                                                    <img src="{% static 'core/img/detalle.svg' %}" style="width: 20px;">    
+                                                </a>
+                                                <a href="{% url 'torta_update' torta.pk %}" class="btn btn-warning btn-sm">
+                                                    <img src="{% static 'core/img/editar.svg' %}" style="width: 20px;">
+                                                </a>
+                                                <a href="{% url 'torta_delete' torta.pk %}" class="btn btn-danger btn-sm">
+                                                    <img src="{% static 'core/img/eliminar.svg' %}" style="width: 20px;">
+                                                </a>
+                                            </td>
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <a href="{% url 'torta_create' %}" class="btn btn-success">Nueva Torta</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_41').addClass('active');
+    {% endblock %}
+</script>
+    

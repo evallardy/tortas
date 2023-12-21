@@ -1,0 +1,426 @@
+{% load static %}
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL GALLO</title>
+
+    <!-- Otros estilos -->
+    <link rel="stylesheet" href="{% static 'core/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/jquery.bxslider.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/jquery-confirm.min.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/sweetalert2.min.css' %}">
+
+    <!-- js -->
+    <script src="{% static 'core/js/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'core/js/jquery-ui.js' %}"></script>
+    <script src="{% static 'core/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'core/js/jquery-confirm.min.js' %}"></script>
+    <script src="{% static 'core/js/jquery.bxslider.min.js' %}"></script>
+    <script src="{% static 'core/js/jquery.chained.js' %}"></script>
+    <script src="{% static 'core/js/funciones.js' %}"></script>
+    <script src="{% static 'core/js/btn-imagen.js' %}"></script>
+    <script src="{% static 'core/js/sweetalert2.all.min.js' %}"></script>
+
+    {% block headJS %}
+
+    {% endblock %}
+
+    <!-- Jquery Confirm -->
+    {% block blcss %}
+
+    {% endblock %}
+</head>
+
+<body style="background-color: darkgrey;">
+    <div>
+        <div class="mapa" style="background-color: #0d6efd;">
+            <table style="background-color: transparent;">
+                <tbody style="background-color: transparent;">
+                    <tr style="background-color: transparent;">
+                        <td class="col-6" style="background-color: transparent;">
+                            <div style="background-color: transparent; vertical-align: middle;">
+                                <label style="font-size: 30px; color: white; background-color: transparent;">
+                                    "EL GALLO"
+                                </label>
+                            </div>
+                        </td>
+                        <td class="col-1" style="background-color: transparent;"></td>
+                        <td class="col-5" style="background-color: transparent;">
+                            <div class="col-12 row align-items-center">
+                                <div class="row col-12 d-flex justify-content-center align-items-center">
+                                    <div class="col-3 d-flex justify-content-center">
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'cambia_contrasena'%}" style="color:gold; width: 40px;" class="col-12"
+                                            title="Cambio de contraseña">
+                                            <svg width="32" height="32" fill="currentColor" class="bi bi-key"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z" />
+                                                <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                            </svg>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-6 d-flex justify-content-center text-center">
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'cambia_contrasena'%}" style="color:gold; width: 80px;" class="col-12"
+                                            title="Cambio de contraseña">{{ user.username }}
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-3 d-flex justify-content-center">
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'logout'%}" title="Salir" class="text-center mx-auto" style="width: 40px;">
+                                            <img src="{% static 'core/img/logout.svg' %}" width="32" />
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'login'%}" title="Entrar"  class="text-center mx-auto" style="width: 40px;">
+                                            <img src="{% static 'core/img/login.svg' %}" width="32" />
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% if user.is_authenticated %}
+        <div class="container mt-2 d-flex justify-content-center align-items-center">
+            <div class="btn-group mapa" style="background-color: #0d6efd;">
+                <a href="{% url 'elabora' %}" class="btn btn-primary boton_1">Elabora</a>
+                <a href="{% url 'pedir' %}" class="btn btn-primary boton_2">Pedir</a>
+                <a href="{% url 'entrega' %}" class="btn btn-primary boton_3">Entregar</a>
+                <a href="{% url 'catalogo' %}" class="btn btn-primary boton_4">Catálogos</a>
+            </div>
+        </div>
+            {% if catalogo %}
+                <div class="container mt-2 d-flex justify-content-center align-items-center" 
+                    style="margin-top: 10px;">
+                    <div class="btn-group mapa" style="background-color: #0d6efd;">
+                        <a href="{% url 'catalogo' %}" class="btn btn-primary boton_41">Tortas</a>
+                        <a href="{% url 'ingrediente_list' %}" class="btn btn-primary boton_42">Ingredientes</a>
+                        <a href="{% url 'adicional_list' %}" class="btn btn-primary boton_43">Adicionales</a>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+        {% block contenido %}
+
+        {% endblock %}
+    </div>
+
+    <script>
+        function reformatear(obj) {
+            objeto = "#" + obj;
+            valor = $(objeto).val().replaceAll(",", "").replaceAll(",", "");
+            $(objeto).val(numberFormat2.format(valor));
+        }
+
+        function valideKey(evt) {
+            var code = (evt.which) ? evt.which : evt.keyCode;
+            var value = evt.target.value;
+            var hasDecimal = (value.indexOf('.') !== -1);
+            if ((code >= 48 && code <= 57) || (code == 46 && !hasDecimal)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function convierteNumero(campo, opcion) {
+            deCampo = "#" + campo;
+            if ($(deCampo).val() != null) {
+                if (opcion == 0) {
+                    a = parseFloat($(deCampo).val().replace(",", "").replace(",", ""));
+                } else {
+                    a = parseFloat($(deCampo).val().replace(",", "").replace(",", "")).toFixed(2);
+                }
+            } else {
+                a = 0;
+            }
+            resultado = 0;
+            if ((isNaN(a)) || (a == null)) {
+                resultado = 0;
+            } else {
+                resultado = a;
+            }
+            return resultado;
+        }
+
+        function verDato(campo) {
+            deCampo = "#id_" + campo;
+            alert(campo + " : " + $(deCampo).val());
+        }
+
+        function validaNumero(campo) {
+            if (isNaN(campo) || campo == "" || campo == 0) {
+                return false;
+            }
+            return true;
+        }
+
+        function validaCadena(campo) {
+            if (isNaN(campo) || campo.trim() == "") {
+                return false;
+            }
+            return true;
+        }
+
+        function pagina(pagina) {
+            // Validar que 'pagina' esté en un rango válido
+            if (pagina < 1 || pagina > 4) {
+                pagina = 1; // O maneja el valor de 'pagina' de acuerdo a tus requisitos
+            }
+            $('.nav-tabs a[href="#content' + pagina + '"]').tab('show');
+        }
+
+        {% block bljs %}
+
+        {% endblock %}
+
+        $(document).ready(function () {
+            $('.slider').bxSlider({
+                mode: 'fade', // horizontal, vertical, fade
+                auto: true,
+                pause: 3000
+            });
+            $('#myTabs a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+
+            {% block inicio %}
+
+            {% endblock %}
+        });
+    </script>
+    <script>
+        $('.boton-guarda').on('click', function (event) {
+            event.preventDefault();
+            validacion = valida_datos();
+            if (validacion) {
+                var cantidad = $("#id_cantidad").val();
+                var radioComer = $('#id_comer');
+                var radioLlevar = $('#id_llevar');
+
+                if (radioComer.is(':checked')) {
+                    donde = 'Comer aquí';
+                } else if (radioLlevar.is(':checked')) {
+                    donde = 'Para llevar';
+                } else {
+                    donde = '';
+                }
+
+                var torta = $("#id_torta").val();
+
+                if ($("#id_adicional").val() == '') {
+                    var adicionales = 'SIN verdura, SIN mayonesa, SIN frijoles, SIN piña';
+                } else {
+                    var adicionales = $("#id_adicional").val();
+                }
+                    
+                var picante = $("#id_picante").val();
+                if (validacion) {
+                    $.ajax({
+                        url: "nueva_torta/", 
+                        method: "POST",
+                        data: {
+                            csrfmiddlewaretoken: "{{ csrf_token }}",
+                            torta: torta,
+                            cantidad: cantidad,
+                            donde: donde,
+                            adicionales: adicionales,
+                            picante: picante,
+                        },
+                        success: function (response) {
+                        $("#id_cantidad").val(1);
+                        $('.seleccion-adicionales').prop('checked', false);
+
+                        $("#id_Ninguna").prop('checked', true);
+                        $("#id_Aguacate").prop('checked', true);
+                        $("#id_Jitomate").prop('checked', true);
+                        $("#id_Mayonesa").prop('checked', true);
+                        $("#id_Frijoles").prop('checked', true);
+                        $("#id_Sinpicante").prop('checked', true);
+                        $("#id_comer").prop('checked', true);
+                        $("#miAlerta").fadeIn().delay(2000).fadeOut();
+                    },
+                    cod_error: function (xhr, textStatus, cod_errorThrown) {
+                        console.log('cod_error:', cod_errorThrown);
+                    }
+                }); 
+                }   
+                
+            }
+        });
+        $('.boton-cancela-elabora').on('click', function (event) {
+            event.preventDefault();
+            var botonId = $(this).attr('id');
+            var numeroId = botonId.split('_').pop();
+            $.ajax({
+                url: "/accion_torta/", 
+                method: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    pk: numeroId,
+                    activo: 9,
+                },
+                success: function (response) {
+                    $('#id_pedido_' + numeroId).remove();
+                },
+                cod_error: function (xhr, textStatus, cod_errorThrown) {
+                    console.log('cod_error:', cod_errorThrown);
+                }
+            }); 
+        });
+        $('.boton-cancela-entrega').on('click', function (event) {
+            event.preventDefault();
+            var botonId = $(this).attr('id');
+            var numeroId = botonId.split('_').pop();
+            $.ajax({
+                url: "/accion_torta/", 
+                method: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    pk: numeroId,
+                    activo: 10,
+                },
+                success: function (response) {
+                    $('#id_pedido_' + numeroId).remove();
+                },
+                cod_error: function (xhr, textStatus, cod_errorThrown) {
+                    console.log('cod_error:', cod_errorThrown);
+                }
+            }); 
+        });
+        $('.boton-termina').on('click', function (event) {
+            event.preventDefault();
+            var botonId = $(this).attr('id');
+            var numeroId = botonId.split('_').pop();
+            $.ajax({
+                url: "/accion_torta/", 
+                method: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    pk: numeroId,
+                    activo: 1,
+                },
+                success: function (response) {
+                    $('#id_pedido_' + numeroId).remove();
+                },
+                cod_error: function (xhr, textStatus, cod_errorThrown) {
+                    console.log('cod_error:', cod_errorThrown);
+                }
+            }); 
+        });
+        $('.boton-entrega').on('click', function (event) {
+            event.preventDefault();
+            var botonId = $(this).attr('id');
+            var numeroId = botonId.split('_').pop();
+            $.ajax({
+                url: "/accion_torta/", 
+                method: "POST",
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    pk: numeroId,
+                    activo: 2,
+                },
+                success: function (response) {
+                    $('#id_pedido_' + numeroId).remove();
+                },
+                cod_error: function (xhr, textStatus, cod_errorThrown) {
+                    console.log('cod_error:', cod_errorThrown);
+                }
+            }); 
+        });
+        function valida_datos() {
+            event.preventDefault();
+            validacion = true;
+            mensaje = '';
+            if (($('#id_cantidad').val() == '') || !($('#id_cantidad').val() > 0)) {
+                validacion = false;
+                mensaje += '¿Que cantidad?\n';
+            }
+            if ($('#id_torta').val() == '') {
+                validacion = false;
+                mensaje += '¿Que torta?\n';
+            }
+            if (!validacion){
+                alert(mensaje);
+            }
+            return validacion;
+        }
+        $('#id_cantidad').on('change', function () {
+//            valida_datos();
+        });
+        $('.articulo').on('click', function () {
+            $('#id_torta1').html('');
+            $('#id_torta').val('');
+            $('#id_adicional1').html('');
+            $('#id_adicional').val('');
+            $('#id_chile1').html('');
+            $('#id_chile').val('');
+            var coma1 = '';
+            var coma2 = '';
+            var coma3 = '';
+            var texto1 = '';
+            var texto2 = '';
+            var texto3 = '';
+            $('#tabla-pedidos tbody tr').each(function() {
+                var radio = $(this).find('td:eq(0) input[type="radio"]');
+                if (radio.is(':checked')) {
+                    var idRadioSeleccionado = radio.attr('id');
+                    var idRadioSinSubfijo = idRadioSeleccionado.substring(3);
+                    if (idRadioSinSubfijo != ' Ninguna') {
+                        texto1 += coma1 + idRadioSinSubfijo;
+                        coma1 = ', ';
+                    }
+                }
+            });
+            $('#tabla-pedidos tbody tr').each(function() {
+                var checkbox = $(this).find('td:eq(1) input[type="checkbox"]');
+                if (checkbox.is(':checked')) {
+                    var idSeleccionado = checkbox.attr('id');
+                    var idSinSubfijo = idSeleccionado.substring(3);
+                    texto1 += coma1 + idSinSubfijo;
+                    coma1 = ', ';
+                }
+            });
+            $('#tabla-pedidos tbody tr').each(function() {
+                var checkboxAdicional = $(this).find('td:eq(2) input[type="checkbox"]');
+                if (checkboxAdicional.is(':checked')) {
+                    var idCheckboxAdicionalSeleccionado = checkboxAdicional.attr('id');
+                    var idCheckboxAdicionalSinSubfijo = idCheckboxAdicionalSeleccionado.substring(3);
+                    texto2 += coma2 + idCheckboxAdicionalSinSubfijo;
+                    coma2 = ', ';
+                }
+            });
+            $('#tabla-pedidos tbody tr').each(function() {
+                var radioChile = $(this).find('td:eq(3) input[type="radio"]');
+                if (radioChile.is(':checked')) {
+                    var idRadioChileSeleccionado = radioChile.attr('id');
+                    var idRadioChileSinSubfijo = idRadioChileSeleccionado.substring(3);
+                    texto3 += coma3 + idRadioChileSinSubfijo;
+                    coma3 = ', ';
+                }
+            });
+            $('#id_torta1').html(texto1);
+            $('#id_torta').val(texto1);
+            $('#id_adicional1').html(texto2);
+            $('#id_adicional').val(texto2);
+            $('#id_chile1').html(texto3);
+            $('#id_chile').val(texto3);
+//            valida_datos();
+        });
+    </script>
+
+</body>
+
+</html>

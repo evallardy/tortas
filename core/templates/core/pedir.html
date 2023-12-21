@@ -1,0 +1,184 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block blcss %}
+<style>
+    #tabla-pedidos tbody tr td {
+        background-color: #3498db;
+        padding-left: 25px;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+{% block contenido %}
+<div class="col-12">
+    {% if user.is_authenticated %}
+    <div class="mt-2">
+        <form action="">
+            <div class="row col-12 d-flex align-items-center justify-content-center">
+                <div class="col-12">
+                    <a href="#" class="btn col-12 mapa-boton boton-guarda"
+                        style="background-color: rgb(48, 226, 48); color: black; font-weight: bold;" >
+                        Guardar
+                    </a>
+                </div>
+                <!-- Contenedor de la alerta -->
+                <div id="miAlerta" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                    <strong>Éxito!</strong> Alta correcta.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="row col-12 d-flex align-items-center justify-content-center" style="background-color: transparent;">
+                <div class="col-10 mapa-torta" style="color: yellow;">
+                    <div class="row col-12" style="background-color: transparent; padding: 0 0 0 30px;">
+                        <table class="col-12" style="background-color: transparent; padding: 0;">
+                            <tbody class="col-12" style="background-color: transparent; padding: 0;">
+                                <tr class="col-12" style="background-color: transparent;padding: 0;">
+                                    <td class="col-1" style="background-color: transparent;"></td>
+                                    <td class="col-3" style="background-color: transparent; padding: 0 0 0 0;">
+                                        <input type="text" class="form-control col-12" name="cantidad" id="id_cantidad"
+                                            style="text-align: center;" onfocusout="reformatear('id_cantidad')"
+                                            onkeypress="return valideKeySinPunto(event);" value="1">
+                                    </td>
+                                    <td class="col-1" style="background-color: transparent; padding: 0;"></td>
+                                    <td class="col-3" style="background-color: transparent; padding: 15px 0 0 20px">
+                                        <label class="list-group-item col-6"  
+                                            style="padding: 0; background-color: transparent; border: 0; padding: 0;">
+                                            <input class="form-check-input me-1 articulo" type="radio"
+                                                value="" id="id_comer" name="llevar" checked>
+                                            Comer
+                                        </label>
+                                    </td>
+                                    <td class="col-3" style="background-color: transparent; padding: 15px 0 0 20px;">
+                                        <label class="list-group-item col-6"
+                                            style="padding: 0 ; background-color: transparent; border: 0;">
+                                            <input class="form-check-input me-1 articulo" type="radio"
+                                                value="" id="id_llevar" name="llevar">
+                                            Llevar
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr class="my-0" style="border-color: white;">
+                    <label for="id_torta" id="id_torta1">
+                        
+                    </label>
+                    <input type="text" id="id_torta" name="torta" hidden>
+                    <hr class="my-0" style="border-color: white;">
+                    <label for="id_adicional" id="id_adicional1">
+                        Aguacate, Frijoles, Jitomate, Mayonesa
+                    </label>
+                    <input type="text" id="id_adicional" name="adicional" 
+                        value="Aguacate, Frijoles, Jitomate, Mayonesa" hidden>
+                    <hr class="my-0" style="border-color: white;">
+                    <label for="id_picante" id="id_picante1">
+                        Sin picante
+                    </label>
+                    <input type="text" id="id_picante" name="picante" value="Sin picante" hidden>
+                </div>
+            </div>
+            <table class="mapa col-12" style="margin: 10px 0 0 0; font-size: 14px;">
+                <tbody class="col-12" style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                    <tr class="col-12" style="padding: 0; border-top-left-radius: 10px;
+                            border-top-right-radius: 10px;">
+                        <td class="col-12 scrollable-td" style="padding: 0; 
+                            background-color: #3498db; border-top-left-radius: 10px; border: 0px;
+                            border-top-right-radius: 10px;">
+                            <div class="col-12 scrollable-content" style="padding: 0; border-top-left-radius: 10px;
+                                    border-top-right-radius: 10px;">
+                                <table id="tabla-pedidos" class="col-12"
+                                    style="background-color: rgb(15, 102, 216); border-top-left-radius: 10px;
+                                        border-top-right-radius: 10px;">
+                                    <thead class="col-12" style="padding: 0; border-top-left-radius: 10px;">
+                                        <tr class="col-12 text-center" style="padding: 0; border-top-left-radius: 10px;">
+                                            <th class="col-3 " style="padding: 0; border-top-left-radius: 10px;">Ingrediente</th>
+                                            <th class="col-3 " style="padding: 0;">Torta</th>
+                                            <th class="col-3 " style="padding: 0;">Adicional</th>
+                                            <th class="col-2 " style="padding: 0;">Picante</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="col-12" style="padding: 0;">
+                                        {% for fila in datos_tabla %}
+                                        <tr class="col-12" style="padding: 0;">
+                                            <td class="col-3" style="padding: 5 0 0 0;">
+                                                {% if fila.torta %}
+                                                <label class="list-group-item"
+                                                    style="padding: 0; background-color: transparent; border: 0;">
+                                                    {% if fila.torta == ' Ninguna' %}
+                                                    <input class="form-check-input me-1 articulo" type="radio"
+                                                        value="" id="id_Ninguna" name="torta" checked >
+                                                    {% else %}
+                                                    <input class="form-check-input me-1 articulo" type="radio"
+                                                        value="" id="id_{{ fila.torta }}" name="torta">
+                                                    {% endif %}
+                                                    {{ fila.torta }}
+                                                </label>
+                                                {% endif %}
+                                            </td>
+                                            <td class="col-3" style="padding: 5 0 0 0;">
+                                                <div class="list-group">
+                                                    {% if fila.ingrediente %}
+                                                    <label class="list-group-item"
+                                                        style="padding: 0; background-color: transparent; border: 0;">
+                                                        <input class="form-check-input me-1 articulo seleccion-adicionales"
+                                                            type="checkbox" value=""
+                                                            id="id_{{ fila.ingrediente }}"
+                                                            name="{{ fila.ingrediente }}">
+                                                        {{ fila.ingrediente }}
+                                                    </label>
+                                                    {% endif %}
+                                                </div>
+                                            </td>
+                                            <td class="col-3" style="padding: 5 0 0 0;">
+                                                {% if fila.adicional %}
+                                                <label class="list-group-item"
+                                                    style="padding: 0; background-color: transparent; border: 0;">
+                                                    <input class="form-check-input me-1 articulo seleccion-adicionales"
+                                                        type="checkbox" value="" id="id_{{ fila.adicional }}"
+                                                        name="{{ fila.adicional }}" 
+                                                        {% if fila.adicional != 'Piña' %} checked {% endif %}>
+                                                    {{ fila.adicional }}
+                                                </label>
+                                                {% endif %}
+                                            </td>
+                                            <td class="col-2" style="padding: 5 0 0 0;">
+                                                {% if fila.picante %}
+                                                <label class="list-group-item"
+                                                    style="padding: 0; background-color: transparent; border: 0;">
+                                                    {% if fila.torta == ' Ninguna' %}
+                                                    <input class="form-check-input me-1 articulo" type="radio"
+                                                        value="" id="id_Sinpicante" name="picante" checked>
+                                                    {% else %}
+                                                    <input class="form-check-input me-1 articulo" type="radio"
+                                                        value="" id="id_{{ fila.picante }}" name="picante">
+                                                    {% endif %}
+                                                    {{ fila.picante }}
+                                                </label>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+            </table>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_2').addClass('active');
+    {% endblock %}
+</script>
+    

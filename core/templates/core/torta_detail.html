@@ -1,0 +1,45 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="col-12 mt-2 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="col-10 mapa">
+        <form action="">
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12" style="background-color: transparent;">
+                            <h2>Detalles de la Torta</h2>
+                            <dl class="row">
+                                <dt class="col-4">Nombre:</dt>
+                                <dd class="col-8">{{ tortas.nombre }}</dd> 
+                                <dt class="col-4">Ingredientes:</dt>
+                                <dd class="col-8">
+                                    {% for ingrediente in tortas.ingredientes.all %}
+                                    {{ ingrediente.nombre }}{% if not forloop.last %}, {% endif %}
+                                    {% endfor %}
+                                </dd> 
+                                <dt class="col-4">Precio:</dt>
+                                <dd class="col-8">{{ tortas.precio }}</dd> 
+                                <a href="{% url 'catalogo' %}" class="btn btn-primary">Volver a la lista</a>
+                            </dl>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_41').addClass('active');
+    {% endblock %}
+</script>
+    
