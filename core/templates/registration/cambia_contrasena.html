@@ -6,14 +6,18 @@
 
 {% endblock %}
 <div class="col-12 d-flex align-items-center justify-content-center">
-    <div class="col-11 mapa card mt-2">
-        <div class="card-body col-11">
+    <div class="col-12 mapa card mt-2">
+        <div class="card-body col-12">
             <h2>Cambiar contraseña</h2>
             <hr>
             <form method="post" class="col-12">
                 {% csrf_token %}
                 <table id="tabla-contrasena" class="table col-12">
-                    {{ form.as_table }}
+                    <div>
+                        {{ form.old_password|as_crispy_field }}
+                        {{ form.new_password1|as_crispy_field }}
+                        {{ form.new_password2|as_crispy_field }}
+                    </div>
                 </table>
                 {% if form.errors %}
                 <div class="col-12" style="margin-top: 10px;">
