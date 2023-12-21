@@ -377,7 +377,8 @@
                 if (radio.is(':checked')) {
                     var idRadioSeleccionado = radio.attr('id');
                     var idRadioSinSubfijo = idRadioSeleccionado.substring(3);
-                    if (idRadioSinSubfijo != ' Ninguna') {
+                    if (!(idRadioSinSubfijo.indexOf('Ninguna') !== -1)) {
+//                    if (idRadioSinSubfijo != ' Ninguna') {
                         texto1 += coma1 + idRadioSinSubfijo;
                         coma1 = ', ';
                     }
