@@ -2,3 +2,4 @@ tortas/settings.py
 static/
 media/
 deploy/
+log/
