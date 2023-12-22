@@ -6,28 +6,30 @@
 {% block contenido %}
 <div class="col-12 mt-2 d-flex align-items-center justify-content-center">
     {% if user.is_authenticated %}
-    <div class="col-10 mapa">
-        <table class="col-12" style="background-color: transparent;">
-            <tbody class="col-12" style="background-color: transparent;">
-                <tr class="col-12" style="background-color: transparent;">
-                    <td class="col-12 scrollable-td" style="background-color: transparent;">
-                        <div class="scrollable-content ">
-                            <h2>{% if object %}Editar{% else %}Nuevo{% endif %} Ingrediente</h2>
-                            <form method="post" class="form">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                                <a href="{% url 'ingrediente_list' %}" class="btn btn-secondary">Cancelar</a>
-                                {% if object %}
-                                    <a href="{% url 'ingrediente_delete' pk=object.pk %}" class="btn btn-danger float-right">Eliminar</a>
-                                {% endif %}
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <form method="post" class="col-12">
+        {% csrf_token %}
+        <div class="col-11 mapa">
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12" style="background-color: transparent;">
+                            <div class="col-12">
+                                <h2>{% if object %}Editar{% else %}Nuevo{% endif %} Ingrediente</h2>
+                                    {{ form.as_p }}
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary" style="padding: 5px;">Guardar</button>
+                <a href="{% url 'ingrediente_list' %}" class="btn btn-secondary" style="padding: 5px;">Cancelar</a>
+                {% if object %}
+                    <a href="{% url 'ingrediente_delete' pk=object.pk %}" class="btn btn-danger" style="padding: 5px;">Eliminar</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
     {% endif %}
 </div>
 {% endblock %}

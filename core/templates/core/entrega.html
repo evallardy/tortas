@@ -9,23 +9,24 @@
     {% endif %}
 {% endblock %}
 {% block contenido %}
-<div class="col-12 mt-2 mapa">
+<div class="col-12 mt-2 mapa"  style="padding: 0;">
     {% if user.is_authenticated %}
-    <div class="col-12">
-        <form action="">
-            <table class="col-12" style="background-color: transparent;">
-                <tbody class="col-12" style="background-color: transparent;">
-                    <tr class="col-12" style="background-color: transparent;">
-                        <td class="col-12 scrollable-td" style="background-color: transparent;">
-                            <div class="col-12 scrollable-content ">
+    <div class="mt-2 col-12" style="padding: 0; background-color: transparent;">
+        <form action="" class="col-12" style="padding: 0; background-color: transparent;">
+            {% csrf_token %}
+            <table class="col-12" style="background-color: transparent; padding: 0;">
+                <tbody class="col-12" style="background-color: transparent; padding: 0;">
+                    <tr class="col-12" style="background-color: transparent; padding: 0;">
+                        <td class="col-12 scrollable-td" style="background-color: transparent; padding: 0;">
+                            <div class="col-12 scrollable-content" style="padding: 0; background-color: transparent;">
                                 {% if pedidos_para_entrega %}
                                 {% for pedido in pedidos_para_entrega %}
-                                <div class="col-12 d-flex align-items-center justify-content-center"  id="id_pedido_{{ pedido.id }}">
-                                    <div class="col-8 mapa-torta" style="color: yellow;">
+                                <div class="col-12 d-flex align-items-center justify-content-center" id="id_pedido_{{ pedido.id }}" style="background-color: transparent; padding: 5px;">
+                                    <div class="col-11 mapa-torta" style="color: yellow; padding: 0 10px 0 0;">
                                         <table class="col-12" style="padding: 0; background-color: transparent;">
                                             <tbody class="col-12" style="padding: 0; background-color: transparent;">
                                                 <tr class="col-12" style="padding: 0; background-color: transparent;">
-                                                    <td class="col-1" style="padding: 0; background-color: transparent;">
+                                                    <td class="col-2 d-flex align-items-center justify-content-center" style="background-color: transparent;">
                                                         <div class="col-12" style="font-size: 35px; padding: 0;">
                                                             {{ pedido.cantidad }} <br> 
                                                             {% if pedido.donde == 'Para llevar' %}
@@ -35,7 +36,7 @@
                                                             {% endif %}
                                                         </div>
                                                     </td>
-                                                    <td class="col-11" style="padding: 0; background-color: transparent;">
+                                                    <td class="col-10" style="padding: 0; background-color: transparent;">
                                                         <div class="col-12 mapa-torta" style="color: yellow;">
                                                             {{ pedido.torta }}
                                                             <hr class="my-0" style="border-color: white;">
@@ -48,10 +49,10 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="col-4" style="padding: 0;">
+                                    <div class="col-1" style="padding: 0;">
                                         <button class="btn btn-success boton-entrega" id="boton_entrega_{{pedido.id}}"
                                             style="padding: 5px;">
-                                            Entregada
+                                            <img src="{% static 'core/img/ok1.svg' %}" style="width: 20px;">
                                         </button>
                                         <button class="btn btn-danger boton-cancela-entrega" style="padding: 5px;" id="id_boton_cancela_{{ pedido.id }}">
                                             <img src="{% static 'core/img/cancelar.svg' %}" style="width: 20px;">

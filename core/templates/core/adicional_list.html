@@ -8,6 +8,7 @@
     {% if user.is_authenticated %}
     <div class="mapa col-10">
         <form action="">
+            {% csrf_token %}
             <table class="col-12" style="background-color: transparent;">
                 <tbody class="col-12" style="background-color: transparent;">
                     <tr class="col-12" style="background-color: transparent;">

@@ -6,32 +6,34 @@
 {% block contenido %}
 <div class="col-12 mt-2 d-flex align-items-center justify-content-center">
     {% if user.is_authenticated %}
-    <div class="col-10 mapa">
-        <table class="col-12" style="background-color: transparent;">
-            <tbody class="col-12" style="background-color: transparent;">
-                <tr class="col-12" style="background-color: transparent;">
-                    <td class="col-12" style="background-color: transparent;">
-                        <div class="col-12">
-                            <h2>{% if object %}Editar{% else %}Nueva{% endif %} Torta</h2>
-                            <form method="post" class="form">
-                                {% csrf_token %}
-                                {{ form.nombre|as_crispy_field }}
-                                {{ form.ingredientes|as_crispy_field }}
-                                {{ form.precio|as_crispy_field }}
-                                <div class="mt-2">
-                                    <button type="submit" class="btn btn-primary">Guardar</button>
-                                    <a href="{% url 'catalogo' %}" class="btn btn-secondary">Cancelar</a>
-                                    {% if object %}
-                                        <a href="{% url 'torta_delete' object.pk %}" class="btn btn-danger float-right">Eliminar</a>
-                                    {% endif %}
-                                </div>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <form method="post" class="form col-12">
+        {% csrf_token %}
+        <div class="col-12 mapa">
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12" style="background-color: transparent;">
+                            <div class="col-11" style="padding: 0;">
+                                <h2>{% if object %}Editar{% else %}Nueva{% endif %} Torta</h2>
+                                    {{ form.nombre|as_crispy_field }}
+                                    {{ form.ingredientes|as_crispy_field }}
+                                    <div class="col-8">
+                                        {{ form.precio|as_crispy_field }}
+                                    </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-2 d-flex align-items-center justify-content-center">
+                <button type="submit" class="btn btn-primary" style="margin: 0 5px 0 0;">Guardar</button>
+                <a href="{% url 'catalogo' %}" class="btn btn-secondary" style="margin: 0 5px 0 0;">Cancelar</a>
+                {% if object %}
+                    <a href="{% url 'torta_delete' object.pk %}" class="btn btn-danger">Eliminar</a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
     {% endif %}
 </div>
 {% endblock %}

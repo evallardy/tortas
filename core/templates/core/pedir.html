@@ -17,6 +17,7 @@
     {% if user.is_authenticated %}
     <div class="mt-2">
         <form action="">
+            {% csrf_token %}
             <div class="row col-12 d-flex align-items-center justify-content-center">
                 <div class="col-12">
                     <a href="#" class="btn col-12 mapa-boton boton-guarda"
