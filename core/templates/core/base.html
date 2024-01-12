@@ -364,8 +364,8 @@
             $('#id_torta').val('');
             $('#id_adicional1').html('');
             $('#id_adicional').val('');
-            $('#id_chile1').html('');
-            $('#id_chile').val('');
+            $('#id_picante1').html('');
+            $('#id_picante').val('');
             var coma1 = '';
             var coma2 = '';
             var coma3 = '';
@@ -378,7 +378,6 @@
                     var idRadioSeleccionado = radio.attr('id');
                     var idRadioSinSubfijo = idRadioSeleccionado.substring(3);
                     if (!(idRadioSinSubfijo.indexOf('Ninguna') !== -1)) {
-//                    if (idRadioSinSubfijo != ' Ninguna') {
                         texto1 += coma1 + idRadioSinSubfijo;
                         coma1 = ', ';
                     }
@@ -405,19 +404,16 @@
             $('#tabla-pedidos tbody tr').each(function() {
                 var radioChile = $(this).find('td:eq(3) input[type="radio"]');
                 if (radioChile.is(':checked')) {
-                    var idRadioChileSeleccionado = radioChile.attr('id');
-                    var idRadioChileSinSubfijo = idRadioChileSeleccionado.substring(3);
-                    texto3 += coma3 + idRadioChileSinSubfijo;
-                    coma3 = ', ';
-                }
+                    var idRadioChileSeleccionado = radioChile.closest('label').attr('id');
+                    texto3 = idRadioChileSeleccionado;
+}
             });
             $('#id_torta1').html(texto1);
             $('#id_torta').val(texto1);
             $('#id_adicional1').html(texto2);
             $('#id_adicional').val(texto2);
-            $('#id_chile1').html(texto3);
-            $('#id_chile').val(texto3);
-//            valida_datos();
+            $('#id_picante1').html(texto3);
+            $('#id_picante').val(texto3);
         });
     </script>
 

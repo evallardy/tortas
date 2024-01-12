@@ -25,11 +25,13 @@ class Index(View):
 
         datos_tabla = []
         for i in range(max_length):
+            picante_texto = PICANTE[i][1].replace(' ','')
+            picante = picante_texto if i < len(PICANTE) else ''
             fila = {
                 'ingrediente': ingredientes[i].nombre if i < len(ingredientes) else '',
                 'torta': tortas[i].nombre if i < len(tortas) else '',
                 'adicional': adicionales[i].nombre if i < len(adicionales) else '',
-                'picante': PICANTE[i][1] if i < len(PICANTE) else '',
+                'picante': picante, 
             }
             datos_tabla.append(fila)
 
@@ -66,11 +68,18 @@ class Pedir(View):
 
         datos_tabla = []
         for i in range(max_length):
+            if i < len(PICANTE):
+                picante = PICANTE[i][1].replace(' ','')
+                picante_texto = PICANTE[i][1]
+            else:
+                picante = ''
+                picante_texto = ''
             fila = {
                 'ingrediente': ingredientes[i].nombre if i < len(ingredientes) else '',
                 'torta': tortas[i].nombre if i < len(tortas) else '',
                 'adicional': adicionales[i].nombre if i < len(adicionales) else '',
-                'picante': PICANTE[i][1] if i < len(PICANTE) else '',
+                'picante': picante,
+                'picante_texto': picante_texto,
             }
             datos_tabla.append(fila)
 
