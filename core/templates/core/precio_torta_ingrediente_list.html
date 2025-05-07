@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+<div class="mt-2 col-12 d-flex align-items-center justify-content-center">
+    {% if user.is_authenticated %}
+    <div class="mapa col-10">
+        <form action="">
+            {% csrf_token %}
+            <table class="col-12" style="background-color: transparent;">
+                <tbody class="col-12" style="background-color: transparent;">
+                    <tr class="col-12" style="background-color: transparent;">
+                        <td class="col-12 scrollable-td" style="background-color: transparent;">
+                            <div class="scrollable-content ">
+                                <h2>Precios X ingredientes</h2>
+
+                                <table class="table text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Especial</th>
+                                            <th>Normal</th>
+                                            <th class="text-right">Precio</th>
+                                            <th class="col-1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for precio in precios %}
+                                        <tr>
+                                            <td>{{ precio.especial }}</td>
+                                            <td>{{ precio.normal }}</td>
+                                            <td class="text-right">{{ precio.precio }}</td>
+                                            <td>
+                                                <a href="{% url 'precio_update' precio.id %}" class="btn btn-warning btn-sm">
+                                                    <img src="{% static 'core/img/editar.svg' %}" style="width: 20px;">
+                                                </a>
+                                                <a href="{% url 'precio_delete' precio.id %}" class="btn btn-danger btn-sm">
+                                                    <img src="{% static 'core/img/eliminar.svg' %}" style="width: 20px;">
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <a href="{% url 'precio_create' %}" class="btn btn-success">Nuevo Precio</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    {% endif %}
+</div>
+<script>
+    {% block inicio %}
+        $('.boton_4').addClass('active');
+        $('.boton_44').addClass('active');
+    {% endblock %}
+</script>
+
+{% endblock %}

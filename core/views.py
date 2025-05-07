@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -8,9 +7,53 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import JsonResponse
 from django.core import serializers
+from django.db import transaction
+from django.views.decorators.http import require_POST
 
 from venta.models import *
 from core.forms import *
+
+class PrecioTortasListView(ListView):
+    model = PrecioTortasIngredientes
+    template_name = 'core/precio_torta_ingrediente_list.html'
+    context_object_name = 'precios'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['catalogo'] = True
+        return context
+
+class PrecioTortasCreateView(CreateView):
+    model = PrecioTortasIngredientes
+    form_class = PrecioTortasIngredientesForm
+    template_name = 'core/precio_torta_ingrediente_form.html'
+    success_url = reverse_lazy('precio_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['catalogo'] = True
+        return context
+
+class PrecioTortasUpdateView(UpdateView):
+    model = PrecioTortasIngredientes
+    form_class = PrecioTortasIngredientesForm
+    template_name = 'core/precio_torta_ingrediente_form.html'
+    success_url = reverse_lazy('precio_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['catalogo'] = True
+        return context
+
+class PrecioTortasDeleteView(DeleteView):
+    model = PrecioTortasIngredientes
+    template_name = 'core/precio_torta_ingrediente_delete.html'
+    success_url = reverse_lazy('precio_list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['catalogo'] = True
+        return context
 
 
 class Index(View):
@@ -46,57 +89,194 @@ class Index(View):
 
         return render(request, self.template_name, context)
 
+def tortas(pedidos):
+    tortas = []
+    for pedido in pedidos:
+        nombre = pedido.nombre
+        solicitud = pedido.solicitud
+        precio = pedido.precio
+        id = pedido.id
+
+        # Primero separamos por guion
+        partes_guion = solicitud.split('-')
+
+        cantidad = partes_guion[0].strip()
+
+        resto = partes_guion[1].strip()
+
+        columnas = [x.strip() for x in resto.split('/')]
+
+        contenido = columnas[0]
+
+        if "PICANTE" in columnas[1]:
+            adicional = 'SIN Condimentos'
+            picante = columnas[1]
+            para = columnas[2]
+        else:
+            adicional = columnas[1]
+            picante = columnas[2]
+            para = columnas[3]
+
+        torta = {
+            "id": id,
+            "nombre": nombre,
+            "cantidad": cantidad,
+            "precio": precio,
+            "contenido": contenido,
+            "adicional": adicional,
+            "picante": picante,
+            "para": para,
+        }
+
+        tortas.append(torta)
+
+    return tortas
+
 class Elabora(View):
     template_name = 'core/elabora.html'
 
     def get(self, request, *args, **kwargs):
-        pedidos_solicitados = Pedido.objects.filter(activo=0)
+
+        pedidos = Pedido.objects.filter(activo=1).order_by('modified')
+
         context = {
-            'pedidos_solicitados': pedidos_solicitados,
+            'pedidos_solicitados': pedidos,
+            'tortas': tortas(pedidos),
         }
         return render(request, self.template_name, context)
 
-class Pedir(View):
-    template_name = 'core/pedir.html'
+class PideNegocio(View):
+    template_name = 'core/pideNegocio.html'
 
     def get(self, request, *args, **kwargs):
-        ingredientes = Ingrediente.objects.filter(activo=True)
-        tortas = Torta.objects.exclude(ingredientes__activo=False)
-        adicionales = Adicional.objects.filter(activo=True)
-
-        max_length = max(len(ingredientes), len(tortas), len(adicionales))
-
-        datos_tabla = []
-        for i in range(max_length):
-            if i < len(PICANTE):
-                picante = PICANTE[i][1].replace(' ','')
-                picante_texto = PICANTE[i][1]
-            else:
-                picante = ''
-                picante_texto = ''
-            fila = {
-                'ingrediente': ingredientes[i].nombre if i < len(ingredientes) else '',
-                'torta': tortas[i].nombre if i < len(tortas) else '',
-                'adicional': adicionales[i].nombre if i < len(adicionales) else '',
-                'picante': picante,
-                'picante_texto': picante_texto,
-            }
-            datos_tabla.append(fila)
+        tortas = Torta.objects.exclude(ingredientes__activo=False).order_by('nombre')
+        ingredientes = Ingrediente.objects.filter(activo=True).order_by('nombre')
+        adicionales = Adicional.objects.filter(activo=True).order_by('nombre')
+        precioingredientes = PrecioTortasIngredientes.objects.filter(activo=True)
 
         context = {
-            'datos_tabla': datos_tabla,
+            'tortas': tortas,
+            'ingredientes': ingredientes,
+            'adicionales': adicionales,
+            'precioingredientes': precioingredientes,
         }
 
         return render(request, self.template_name, context)
+    
+    def post(self, request):
+        tortas = request.POST.getlist('torta[]')
+        valores = request.POST.getlist('valor[]')
+        nombre = request.POST.get('nombre')
+
+        
+        with transaction.atomic():
+            for torta, valor in zip(tortas, valores):
+                valorNumerico = valor.replace(',','')
+                nuevo_pedido = Pedido.objects.create(
+                    nombre=nombre,
+                    solicitud=torta,
+                    precio=valorNumerico,
+                    activo=1,
+                )
+                # Aquí puedes guardar en la base de datos si es necesario
+
+        return redirect('pide_negocio')    
+
+
+class PideCliente(View):
+    template_name = 'core/pideCliente.html'
+
+    def get(self, request, *args, **kwargs):
+        tortas = Torta.objects.exclude(ingredientes__activo=False).order_by('nombre')
+        ingredientes = Ingrediente.objects.filter(activo=True).order_by('nombre')
+        adicionales = Adicional.objects.filter(activo=True).order_by('nombre')
+        precioingredientes = PrecioTortasIngredientes.objects.filter(activo=True)
+
+        context = {
+            'tortas': tortas,
+            'ingredientes': ingredientes,
+            'adicionales': adicionales,
+            'precioingredientes': precioingredientes,
+        }
+
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        tortas = request.POST.getlist('torta[]')
+        valores = request.POST.getlist('valor[]')
+        nombre = request.POST.get('nombre')
+
+        
+        with transaction.atomic():
+            for torta, valor in zip(tortas, valores):
+                valorNumerico = valor.replace(',','')
+                nuevo_pedido = Pedido.objects.create(
+                    nombre=nombre,
+                    solicitud=torta,
+                    precio=valorNumerico,
+                )
+                # Aquí puedes guardar en la base de datos si es necesario
+
+        return redirect('pide_cliente')    
+
+class VerificaCliente(View):
+    template_name = 'core/verificaCliente.html'
+
+    def get(self, request, *args, **kwargs):
+        pedidos = Pedido.objects.filter(activo=0).order_by('modified')
+
+        context = {
+            'pedidos': pedidos,
+        }
+
+        return render(request, self.template_name, context)
+    
+    def post(self, request):
+        tortas = request.POST.getlist('torta[]')
+        valores = request.POST.getlist('valor[]')
+        nombre = request.POST.get('nombre')
+
+        
+        with transaction.atomic():
+            for torta, valor in zip(tortas, valores):
+                valorNumerico = valor.replace(',','')
+                nuevo_pedido = Pedido.objects.create(
+                    nombre=nombre,
+                    solicitud=torta,
+                    precio=valorNumerico,
+                    activo=1
+                )
+                # Aquí puedes guardar en la base de datos si es necesario
+
+        return redirect('pide_cliente')    
+    
+@require_POST
+def eliminaPedido(request):
+    pk = request.POST.get('pk')
+    if pk:
+        eliminado = Pedido.objects.filter(id=pk).delete()
+
+    return redirect(reverse('verifica_cliente'))
+
+@require_POST
+def confirmadoPedido(request):
+    pk = request.POST.get('pk')
+    if pk:
+        pedido = Pedido.objects.get(id=pk)
+        pedido.activo = 1
+        pedido.save()
+
+    return redirect(reverse('verifica_cliente'))
 
 class Entrega(View):
     template_name = 'core/entrega.html'
 
     def get(self, request, *args, **kwargs):
-        pedidos_para_entrega = Pedido.objects.filter(activo=1)
+        pedidos_para_entrega = Pedido.objects.filter(activo=2).order_by('modified')
 
         context = {
             'pedidos_para_entrega': pedidos_para_entrega,
+            'tortas': tortas(pedidos_para_entrega)
         }
 
         return render(request, self.template_name, context)
@@ -127,13 +307,17 @@ def accion_torta(request):
         if pk is None or activo is None:
             return JsonResponse({'error': 'Se requieren los parámetros "pk" y "activo"'}, status=400)
 
-        Pedido.objects.filter(id=pk).update(activo=activo)
+#        Pedido.objects.filter(id=pk).update(activo=activo)
 
-        if activo == '1' or activo == '9':
-            pedidos_solicitados = Pedido.objects.filter(activo=0).values()
-            data = {'pedidos_solicitados': list(pedidos_solicitados)}
+        pedido = Pedido.objects.get(id=pk)
+        pedido.activo = activo
+        pedido.save()
+
+        if activo == '2' or activo == '9':
+            pedidos_solicitados = Pedido.objects.filter(activo=1).values()
+            data = {'pedidos_solicitados': list(pedidos_solicitados),}
         else:
-            pedidos_para_entrega = Pedido.objects.filter(activo=1).values()
+            pedidos_para_entrega = Pedido.objects.filter(activo=2).values()
             data = {'pedidos_para_entrega': list(pedidos_para_entrega)}
         
         return JsonResponse(data)
@@ -159,7 +343,7 @@ class IngredienteDetailView(DetailView):
 class IngredienteCreateView(PermissionRequiredMixin, CreateView):
     model = Ingrediente
     template_name = 'core/ingrediente_form.html'
-    fields = ['nombre']
+    form_class = IngredienteForm
     success_url = reverse_lazy('ingrediente_list')
     permission_required = 'core.add_ingrediente'
     def get_context_data(self, **kwargs):
@@ -170,7 +354,7 @@ class IngredienteCreateView(PermissionRequiredMixin, CreateView):
 class IngredienteUpdateView(PermissionRequiredMixin, UpdateView):
     model = Ingrediente
     template_name = 'core/ingrediente_form.html'
-    fields = ['nombre']
+    form_class = IngredienteForm
     success_url = reverse_lazy('ingrediente_list')
     permission_required = 'core.change_ingrediente'
     def get_context_data(self, **kwargs):
@@ -286,3 +470,38 @@ class AdicionalDeleteView(PermissionRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['catalogo'] = True
         return context
+
+'''
+class Pedir(View):
+    template_name = 'core/pedir.html'
+
+    def get(self, request, *args, **kwargs):
+        ingredientes = Ingrediente.objects.filter(activo=True)
+        tortas = Torta.objects.exclude(ingredientes__activo=False)
+        adicionales = Adicional.objects.filter(activo=True)
+
+        max_length = max(len(ingredientes), len(tortas), len(adicionales))
+
+        datos_tabla = []
+        for i in range(max_length):
+            if i < len(PICANTE):
+                picante = PICANTE[i][1].replace(' ','')
+                picante_texto = PICANTE[i][1]
+            else:
+                picante = ''
+                picante_texto = ''
+            fila = {
+                'ingrediente': ingredientes[i].nombre if i < len(ingredientes) else '',
+                'torta': tortas[i].nombre if i < len(tortas) else '',
+                'adicional': adicionales[i].nombre if i < len(adicionales) else '',
+                'picante': picante,
+                'picante_texto': picante_texto,
+            }
+            datos_tabla.append(fila)
+
+        context = {
+            'datos_tabla': datos_tabla,
+        }
+
+        return render(request, self.template_name, context)
+'''

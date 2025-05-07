@@ -94,7 +94,8 @@
         <div class="container mt-2 d-flex justify-content-center align-items-center">
             <div class="btn-group mapa" style="background-color: #0d6efd;">
                 <a href="{% url 'elabora' %}" class="btn btn-primary boton_1">Elabora</a>
-                <a href="{% url 'pedir' %}" class="btn btn-primary boton_2">Pedir</a>
+                <a href="{% url 'verifica_cliente' %}" class="btn btn-primary boton_2">Confirma</a>
+                <a href="{% url 'pide_negocio' %}" class="btn btn-primary boton_5">Pedir</a>
                 <a href="{% url 'entrega' %}" class="btn btn-primary boton_3">Entregar</a>
                 <a href="{% url 'catalogo' %}" class="btn btn-primary boton_4">Catálogos</a>
             </div>
@@ -104,6 +105,7 @@
                     style="margin-top: 10px;">
                     <div class="btn-group mapa" style="background-color: #0d6efd;">
                         <a href="{% url 'catalogo' %}" class="btn btn-primary boton_41">Tortas</a>
+                        <a href="{% url 'precio_list' %}" class="btn btn-primary boton_44">Precio Ing.</a>
                         <a href="{% url 'ingrediente_list' %}" class="btn btn-primary boton_42">Ingredientes</a>
                         <a href="{% url 'adicional_list' %}" class="btn btn-primary boton_43">Adicionales</a>
                     </div>
@@ -272,7 +274,7 @@
                     activo: 9,
                 },
                 success: function (response) {
-                    $('#id_pedido_' + numeroId).remove();
+                    $('#id_torta_' + numeroId).remove();
                 },
                 cod_error: function (xhr, textStatus, cod_errorThrown) {
                     console.log('cod_error:', cod_errorThrown);
@@ -292,7 +294,7 @@
                     activo: 10,
                 },
                 success: function (response) {
-                    $('#id_pedido_' + numeroId).remove();
+                    $('#id_torta_' + numeroId).remove();
                 },
                 cod_error: function (xhr, textStatus, cod_errorThrown) {
                     console.log('cod_error:', cod_errorThrown);
@@ -309,10 +311,10 @@
                 data: {
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                     pk: numeroId,
-                    activo: 1,
+                    activo: 2,
                 },
                 success: function (response) {
-                    $('#id_pedido_' + numeroId).remove();
+                    $('#id_torta_' + numeroId).remove();
                 },
                 cod_error: function (xhr, textStatus, cod_errorThrown) {
                     console.log('cod_error:', cod_errorThrown);
@@ -329,10 +331,10 @@
                 data: {
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                     pk: numeroId,
-                    activo: 2,
+                    activo: 3,
                 },
                 success: function (response) {
-                    $('#id_pedido_' + numeroId).remove();
+                    $('#id_torta_' + numeroId).remove();
                 },
                 cod_error: function (xhr, textStatus, cod_errorThrown) {
                     console.log('cod_error:', cod_errorThrown);

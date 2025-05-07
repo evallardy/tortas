@@ -12,7 +12,7 @@
 {% if not user.is_authenticated %}
 <div class="col-12 mt-2"></div>
 {% else %}
-<div class="col-12 mapa mt-2" style="padding: 0;">
+<div class="col-12 mt-2 mx-3" style="padding: 0;">
 {% endif %}
     {% if not user.is_authenticated %}
     <div class="col-12 d-flex align-items-center justify-content-center">
@@ -29,30 +29,33 @@
                     <tr class="col-12" style="background-color: transparent; padding: 0;">
                         <td class="col-12 scrollable-td" style="background-color: transparent; padding: 0;">
                             <div class="col-12 scrollable-content" style="padding: 0; background-color: transparent;">
-                                {% if pedidos_solicitados %}
-                                {% for pedido in pedidos_solicitados %}
-                                <div class="col-12 d-flex align-items-center justify-content-center" id="id_pedido_{{ pedido.id }}" style="background-color: transparent; padding: 5px;">
+                                {% if tortas %}
+                                {% for torta in tortas %}
+                                <div class="col-12 d-flex align-items-center justify-content-center" id="id_torta_{{ torta.id }}" style="background-color: transparent; padding: 5px;">
                                     <div class="col-10 mapa-torta" style="color: yellow; padding: 0 10px 0 0;">
+                                        <div style="margin-left: 15px; margin-top: 5px; padding: 0; text-align: end;">
+                                            <h5 style="padding: 0; margin: 0;">{{ torta.nombre }}</h5>
+                                        </div>
                                         <table class="col-12" style="padding: 0; background-color: transparent;">
                                             <tbody class="col-12" style="padding: 0; background-color: transparent;">
                                                 <tr class="col-12" style="padding: 0; background-color: transparent;">
                                                     <td class="col-2 d-flex align-items-center justify-content-center" style="background-color: transparent;">
                                                         <div class="col-12" style="font-size: 35px; padding: 0;">
-                                                            {{ pedido.cantidad }} <br> 
-                                                            {% if pedido.donde == 'Para llevar' %}
-                                                                <img src="{% static 'core/img/bolsa.png' %}" style="width: 30px;">
-                                                            {% else %}
+                                                            {{ torta.cantidad }} <br> 
+                                                            {% if torta.para == 'PARA COMER AQUÍ' %}
                                                                 <img src="{% static 'core/img/tienda.png' %}" style="width: 30px;">
+                                                            {% else %}
+                                                                <img src="{% static 'core/img/bolsa.png' %}" style="width: 30px;">
                                                             {% endif %}
                                                         </div>
                                                     </td>
                                                     <td class="col-10" style="padding: 0; background-color: transparent;">
                                                         <div class="col-12 mapa-torta" style="color: yellow;">
-                                                            {{ pedido.torta }}
+                                                            {{ torta.contenido }}
                                                             <hr class="my-0" style="border-color: white;">
-                                                            {{ pedido.adicionales }}
+                                                            {{ torta.adicional }}
                                                             <hr class="my-0" style="border-color: white;">
-                                                            {{ pedido.picante }}
+                                                            {{ torta.picante }}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -60,11 +63,11 @@
                                         </table>
                                     </div>
                                     <div class="col-2" style="padding: 0;">
-                                        <button class="btn btn-success boton-termina" id="boton_termina_{{ pedido.id }}"
+                                        <button class="btn btn-success boton-termina" id="boton_termina_{{ torta.id }}"
                                             style="padding: 5px;">
                                             <img src="{% static 'core/img/ok1.svg' %}" style="width: 32px;">
                                         </button>
-                                        <button class="btn btn-danger boton-cancela-elabora" style="padding: 5px;" id="id_boton_cancela_{{ pedido.id }}">
+                                        <button class="btn btn-danger boton-cancela-elabora" style="padding: 5px;" id="id_boton_cancela_{{ torta.id }}">
                                             <img src="{% static 'core/img/cancelar.svg' %}" style="width: 32px;">
                                         </button>
                                     </div>

@@ -13,11 +13,15 @@
                     <td class="col-12 scrollable-td" style="background-color: transparent;">
                         <div class="scrollable-content ">
                             <h2>Confirmar Eliminación</h2>
-                            <p>¿Estás seguro de que deseas eliminar el ingrediente <strong>"{{ object.nombre }}"</strong>?</p>
+                            <p>¿Estás seguro de que deseas eliminar el precio?, con : <br><br>
+                                Ingredientes especiales<strong> {{ object.especial }}</strong><br>
+                                Ingredientes normales<strong> {{ object.normal }}</strong><br>
+                                precio<strong> $ {{ object.precio }}</strong><br>
+                            </p>
                             <form method="post" class="form">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger">Sí, eliminar</button>
-                                <a href="{% url 'ingrediente_list' %}" class="btn btn-secondary">Cancelar</a>
+                                <a href="{% url 'precio_list' %}" class="btn btn-secondary">Cancelar</a>
                             </form>
                         </div>
                     </td>
@@ -30,7 +34,7 @@
 <script>
     {% block inicio %}
         $('.boton_4').addClass('active');
-        $('.boton_42').addClass('active');
+        $('.boton_44').addClass('active');
     {% endblock %}
 </script>
 {% endblock %}

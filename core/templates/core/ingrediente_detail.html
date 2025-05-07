@@ -16,6 +16,8 @@
                             <div class="scrollable-content ">
                                 <h2>Detalles del Ingrediente</h2>
                                 <p><strong>Nombre:</strong> {{ object.nombre }}</p>
+                                <p><strong>Tipo:</strong> {{ object.get_tipo_display }}</p>
+                                <p><strong>Precio:</strong> {{ object.precio }}</p>
                                 <a href="{% url 'ingrediente_list' %}" class="btn btn-primary">Volver a la lista</a>
                             </div>
                         </td>
@@ -26,11 +28,9 @@
     </div>
     {% endif %}
 </div>
-{% endblock %}
-
 <script>
     {% block inicio %}
         $('.boton_4').addClass('active');
     {% endblock %}
 </script>
-    
+{% endblock %}

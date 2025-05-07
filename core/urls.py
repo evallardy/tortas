@@ -7,7 +7,13 @@ urlpatterns = [
     path('accion_torta/', accion_torta, name='accion_torta'),
 
     path('elabora', Elabora.as_view(), name='elabora'),
-    path('pedir', Pedir.as_view(), name='pedir'),
+    path('pideNegocio', PideNegocio.as_view(), name='pide_negocio'),
+#    path('pedir', Pedir.as_view(), name='pedir'),
+    path('pideCliente', PideCliente.as_view(), name='pide_cliente'),
+    path('verificaCliente', VerificaCliente.as_view(), name='verifica_cliente'),
+    path('eliminaPedido/', eliminaPedido, name='elimina_pedido'),
+    path('confirmadoPedido/', confirmadoPedido, name='confirmado_pedido'),
+#    path('pideCliente/<uuid:token>/', PideCliente.as_view(), name='pide_cliente'),
     path('entrega', Entrega.as_view(), name='entrega'),
 
     path('ingredientes/', IngredienteListView.as_view(), name='ingrediente_list'),
@@ -26,4 +32,9 @@ urlpatterns = [
     path('adicionales/nuevo/', AdicionalCreateView.as_view(), name='adicional_create'),
     path('adicionales/<int:pk>/', AdicionalUpdateView.as_view(), name='adicional_update'),
     path('adicionales/<int:pk>/eliminar/', AdicionalDeleteView.as_view(), name='adicional_delete'),
+
+    path('precios/', PrecioTortasListView.as_view(), name='precio_list'),
+    path('precios/nuevo/', PrecioTortasCreateView.as_view(), name='precio_create'),
+    path('precios/<int:pk>/editar/', PrecioTortasUpdateView.as_view(), name='precio_update'),
+    path('precios/<int:pk>/eliminar/', PrecioTortasDeleteView.as_view(), name='precio_delete'),
 ]

@@ -19,13 +19,17 @@
                                     <thead>
                                     <tr>
                                         <th>Nombre</th>
-                                        <th>Acciones</th>
+                                        <th>Tipo</th>
+                                        <th>Precio</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {% for ingrediente in object_list %}
                                         <tr>
                                         <td>{{ ingrediente.nombre }}</td>
+                                        <td>{{ ingrediente.get_tipo_display }}</td>
+                                        <td>{{ ingrediente.precio }}</td>
                                         <td>
                                             <a href="{% url 'ingrediente_update' ingrediente.pk %}" class="btn btn-warning btn-sm">
                                                 <img src="{% static 'core/img/editar.svg' %}" style="width: 20px;">
