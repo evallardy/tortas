@@ -281,6 +281,31 @@ class Entrega(View):
 
         return render(request, self.template_name, context)
 
+def paga_torta(request):
+    if request.method == 'POST':
+        pagos = request.POST.getlist('pago')
+        importe = request.POST['importe']
+
+        with transaction.atomic():
+            pago = Pagos.objects.create(
+                importe=importe,
+            )
+
+            detalles = []
+
+            for item in pagos:
+                clave, paga = item.split('|')
+
+                pedido = Pedido.objects.get(id=clave)
+                pedido.activo = 3
+                pago=pago
+
+                pedido.save()
+
+
+    url = reverse('entrega')
+    return redirect(url)
+
 def nueva_torta(request):
     if request.method == 'POST':
         torta = request.POST['torta']
@@ -471,38 +496,3 @@ class AdicionalDeleteView(PermissionRequiredMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['catalogo'] = True
         return context
-
-'''
-class Pedir(View):
-    template_name = 'core/pedir.html'
-
-    def get(self, request, *args, **kwargs):
-        ingredientes = Ingrediente.objects.filter(activo=True)
-        tortas = Torta.objects.exclude(ingredientes__activo=False)
-        adicionales = Adicional.objects.filter(activo=True)
-
-        max_length = max(len(ingredientes), len(tortas), len(adicionales))
-
-        datos_tabla = []
-        for i in range(max_length):
-            if i < len(PICANTE):
-                picante = PICANTE[i][1].replace(' ','')
-                picante_texto = PICANTE[i][1]
-            else:
-                picante = ''
-                picante_texto = ''
-            fila = {
-                'ingrediente': ingredientes[i].nombre if i < len(ingredientes) else '',
-                'torta': tortas[i].nombre if i < len(tortas) else '',
-                'adicional': adicionales[i].nombre if i < len(adicionales) else '',
-                'picante': picante,
-                'picante_texto': picante_texto,
-            }
-            datos_tabla.append(fila)
-
-        context = {
-            'datos_tabla': datos_tabla,
-        }
-
-        return render(request, self.template_name, context)
-'''

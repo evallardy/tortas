@@ -15,6 +15,7 @@ urlpatterns = [
     path('confirmadoPedido/', confirmadoPedido, name='confirmado_pedido'),
 #    path('pideCliente/<uuid:token>/', PideCliente.as_view(), name='pide_cliente'),
     path('entrega', Entrega.as_view(), name='entrega'),
+    path('pagaTorta', paga_torta, name='paga_torta'),
 
     path('ingredientes/', IngredienteListView.as_view(), name='ingrediente_list'),
     path('ingredientes/<int:pk>/', IngredienteDetailView.as_view(), name='ingrediente_detail'),

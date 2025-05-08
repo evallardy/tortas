@@ -62,10 +62,10 @@ class Torta(models.Model, PermissionRequiredMixin):
 class Pedido(models.Model, PermissionRequiredMixin):
     nombre = models.CharField("Nombre", max_length=255, null=True, blank=True)
     solicitud = models.JSONField("Torta", null=True, blank=True)
-    torta = models.CharField("Torta", max_length=100, null=True, blank=True)
-    donde = models.CharField("Donde", max_length=20, null=True, blank=True)
-    adicionales = models.CharField("Adicionales", max_length=100, null=True, blank=True)
-    picante = models.JSONField("Picante", max_length=30, null=True, blank=True)
+#    torta = models.CharField("Torta", max_length=100, null=True, blank=True)
+#    donde = models.CharField("Donde", max_length=20, null=True, blank=True)
+#    adicionales = models.CharField("Adicionales", max_length=100, null=True, blank=True)
+#    picante = models.JSONField("Picante", max_length=30, null=True, blank=True)
     cantidad = models.IntegerField("Cantidad", default=0)
     precio = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
     activo = models.IntegerField('Activo', choices=ESTATUS_TORTA , default=0)
@@ -97,11 +97,26 @@ class Adicional(models.Model, PermissionRequiredMixin):
     def __str__(self):   # para poner los nombres en los renglones
         return '%s' % (self.nombre)
 
+class Pagos(models.Model, PermissionRequiredMixin):
+    importe = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
+    created = models.DateTimeField("Creado", auto_now_add=True)
+    modified = models.DateTimeField("Actualizado", auto_now=True)
+
+    class Meta:
+        verbose_name = 'Pago'
+        verbose_name_plural = 'Pagos'
+        ordering = ['-created']
+        db_table = 'Pagos'
+
+    def __str__(self):   
+        return '%s' % (self.importe)
+
 class PrecioTortasIngredientes(models.Model, PermissionRequiredMixin):
     especial = models.IntegerField("Especial", default=0)
     normal = models.IntegerField("Normal", default=0)
     precio = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
     activo = models.BooleanField('Activo', default=True)
+    pago = models.ForeignKey(Pagos, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField("Creado", auto_now_add=True)
     modified = models.DateTimeField("Actualizado", auto_now=True)
 
@@ -114,3 +129,5 @@ class PrecioTortasIngredientes(models.Model, PermissionRequiredMixin):
 
     def __str__(self):   
         return '%s %s' % (self.ingredientes, self.precio)
+
+

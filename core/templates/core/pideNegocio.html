@@ -55,12 +55,21 @@
                     </div>
                 </div>
                 <div class="border col-12" style="padding: 0; height: 60%; ">
-                    <div class="d-flex align-items-center">
-                        <button class="btn btn-warning mx-5" style="margin-top: 0;" onclick="agregaTabla()">Agregar</button>
-                        <h3 class="mx-5" style="text-align: left; margin-bottom: 0; ">
-                            $<label id="precio_subpedido" style="margin-top: 20px; padding: 0; margin-left: 25px;">0</label>
-                        </h3>
-                    </div>
+                    <table class="col-12">
+                        <tbody>
+                            <tr class="col-12">
+                                <td class="col-4">
+                                    <button class="col-12 btn btn-warning" onclick="agregaTabla()">Agregar</button>
+                                </td>
+                                <td class="col-1">
+                                    <label class="col-12 etiqueta mt-3">$</label>
+                                </td>
+                                <td class="col-7">
+                                    <label class="col-12 etiqueta mt-3" id="precio_subpedido">0</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <table style="width: 100%;">
                         <tbody>
                             <tr>
