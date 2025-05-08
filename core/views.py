@@ -104,23 +104,31 @@ class ReportePagosView(TemplateView):
         context = super().get_context_data(**kwargs)
         # Obtener todas las fechas únicas del campo created
         fechas = Pagos.objects.dates('created', 'day', order='DESC')
-        context['fechas'] = fechas
 
-        # Obtener fecha seleccionada por GET o usar la más reciente
-        fecha_seleccionada = self.request.GET.get('fecha')
-        if fecha_seleccionada:
-            registros = Pagos.objects.filter(created__date=fecha_seleccionada)
-        elif fechas:
-            fecha_seleccionada = fechas[0].strftime('%Y-%m-%d')
-            registros = Pagos.objects.filter(created__date=fecha_seleccionada)
-        else:
-            registros = []
+        tiene_pagos = False
 
-        context['fecha_seleccionada'] = fecha_seleccionada
-        context['registros'] = registros
-        context['total_importe_real'] = registros.aggregate(total=Sum('importe_real'))['total'] or 0
-        context['total_importe'] = registros.aggregate(total=Sum('importe'))['total'] or 0
-        context['total_tortas'] = registros.aggregate(total=Sum('cantidad_torta'))['total'] or 0
+        if fechas:
+            
+            tiene_pagos = True
+            
+            context['fechas'] = fechas
+
+            # Obtener fecha seleccionada por GET o usar la más reciente
+            fecha_seleccionada = self.request.GET.get('fecha')
+            if fecha_seleccionada:
+                registros = Pagos.objects.filter(created__date=fecha_seleccionada)
+            elif fechas:
+                fecha_seleccionada = fechas[0].strftime('%Y-%m-%d')
+                registros = Pagos.objects.filter(created__date=fecha_seleccionada)
+            else:
+                registros = []
+
+            context['fecha_seleccionada'] = fecha_seleccionada
+            context['registros'] = registros
+            context['total_importe_real'] = registros.aggregate(total=Sum('importe_real'))['total'] or 0
+            context['total_importe'] = registros.aggregate(total=Sum('importe'))['total'] or 0
+            context['total_tortas'] = registros.aggregate(total=Sum('cantidad_torta'))['total'] or 0
+        context['tiene_pagos'] = tiene_pagos
         return context
 
 class PrecioTortasListView(ListView):

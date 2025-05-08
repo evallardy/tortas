@@ -16,66 +16,73 @@
         </div>
     </div>
     {% else %}
-    <div class="mt-2 col-12" style="padding: 0; background-color: transparent;">
-        <form method="get" class="mb-4">
-            <div class="row ">
-                <div class="col-auto etiqueta" style="padding: 8px 0 0 15px;">
-                    <label for="fecha" >Seleccione una fecha:</label>
-                </div>
-                <div class="col-auto">
-                    <select name="fecha" id="fecha" class="form-control" onchange="this.form.submit()">
-                        {% for fecha in fechas %}
-                            <option value="{{ fecha|date:'Y-m-d' }}" {% if fecha|date:'Y-m-d' == fecha_seleccionada %}selected{% endif %}>
-                                {{ fecha|date:'d/m/Y' }}
-                            </option>
-                        {% endfor %}
-                    </select>
+        {% if tiene_pagos %}
+            <div class="mt-2 col-12" style="padding: 0; background-color: transparent;">
+                <form method="get" class="mb-4">
+                    <div class="row ">
+                        <div class="col-auto etiqueta" style="padding: 8px 0 0 15px;">
+                            <label for="fecha" >Seleccione una fecha:</label>
+                        </div>
+                        <div class="col-auto">
+                            <select name="fecha" id="fecha" class="form-control" onchange="this.form.submit()">
+                                {% for fecha in fechas %}
+                                    <option value="{{ fecha|date:'Y-m-d' }}" {% if fecha|date:'Y-m-d' == fecha_seleccionada %}selected{% endif %}>
+                                        {{ fecha|date:'d/m/Y' }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <div>
+                    <table class="col-12 table">
+                        <thead class="text-right">
+                            <tr>
+                                <th></th>
+                                <th>Tortas</th>
+                                <th>Importe</th>
+                                <th>Importe Real</th>
+                                <th class="text-left">Pago</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-right">
+                            {% if total_tortas %}
+                            <tr class="etiqueta">
+                                <td>Totales</td>
+                                <td>{{ total_tortas }}</td>
+                                <td>{{ total_importe }}</td>
+                                <td>{{ total_importe_real }}</td>
+                                <td></td>
+                            </tr>
+                            {% endif %}
+                            {% for pago in registros %}
+                                <tr>
+                                    <td>
+                                        <span style="cursor: pointer; color: blue;" onclick="verTortas({{pago.id}})">
+                                            <img src="{% static 'core/img/detalle.svg' %}" width="20" />
+                                        </span>
+                                    </td>
+                                    <td>{{ pago.cantidad_torta }}</td>
+                                    <td>{{ pago.importe }}</td>
+                                    <td>{{ pago.importe_real }}</td>
+                                    <td>{{ pago.created|date:"d/m/Y H:i" }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No hay pagos registrados para esta fecha.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </form>
-
-        <div>
-            <table class="col-12 table">
-                <thead class="text-right">
-                    <tr>
-                        <th></th>
-                        <th>Tortas</th>
-                        <th>Importe</th>
-                        <th>Importe Real</th>
-                        <th class="text-left">Pago</th>
-                    </tr>
-                </thead>
-                <tbody class="text-right">
-                    {% if total_tortas %}
-                    <tr class="etiqueta">
-                        <td>Totales</td>
-                        <td>{{ total_tortas }}</td>
-                        <td>{{ total_importe }}</td>
-                        <td>{{ total_importe_real }}</td>
-                        <td></td>
-                    </tr>
-                    {% endif %}
-                    {% for pago in registros %}
-                        <tr>
-                            <td>
-                                <span style="cursor: pointer; color: blue;" onclick="verTortas({{pago.id}})">
-                                    <img src="{% static 'core/img/detalle.svg' %}" width="20" />
-                                </span>
-                            </td>
-                            <td>{{ pago.cantidad_torta }}</td>
-                            <td>{{ pago.importe }}</td>
-                            <td>{{ pago.importe_real }}</td>
-                            <td>{{ pago.created|date:"d/m/Y H:i" }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center">No hay pagos registrados para esta fecha.</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+        {% else %}
+        <h2>
+            No se tiene pagos por el momento
+        </h2>
+            
+        {% endif %}
     {% endif %}
 </div>
 <!-- Modal Bootstrap -->
