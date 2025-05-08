@@ -13,8 +13,7 @@
             <div class="row align-items-center">
                 <label class="col-2 etiqueta mb-0" style="padding: 0 0 0 15px ;">Para :</label>
                 <div class="col-8" style="margin: 0 0 0 -10px;">
-                    <input class="form-control col-12" type="text" name="nombre" id="id_nombre"
-                        style="height: 30px;">
+                    <input class="form-control col-12" type="text" name="nombre" id="id_nombre" style="height: 30px;">
                 </div>
                 <div class="col-2" style="margin: 0 0 0 -10px;">
                     <button type="submit" class="btn btn-success" style="margin-top: 0;">Enviar</a>
@@ -43,37 +42,61 @@
                 </div>
             </div>
             <div class="border col-12" style="padding: 0; height: 60%; ">
-                <div class="d-flex align-items-center">
-                    <button class="btn btn-warning mx-5" style="margin-top: 0;" onclick="agregaTabla()">Agregar</button>
-                    <h3 class="mx-5" style="text-align: left; margin-bottom: 0; ">
-                        $<label id="precio_subpedido" style="margin-top: 20px; padding: 0; margin-left: 25px;">0</label>
-                    </h3>
-                </div>
-                <div class="col-12 row mx-1" style="height: 25px;">
-                    <div class="col-5 d-flex align-items-center">
-                        <label class="col-6 mb-0 etiqueta" style="padding-left: 0; margin-left: -5px;">Cantidad</label>
-                        <input type="text" name="cantidad" id="id_cantidad"
-                            style="width: 50px; margin-left: 5px; text-align: center;"
-                            onfocusout="reformatear('id_cantidad')" onkeypress="return valideKeySinPunto(event);" value="1"
-                            oninput="creaTorta();">
+                <div class="col-12 row">
+                    <div class="col-4">
+                        <button class="col-12 btn btn-warning" onclick="agregaTabla()">Agregar</button>
                     </div>
-                    <div class="col-7 d-flex align-items-center">
-                        <label class="me-2 mb-0 etiqueta">Para</label>
-
-                        <input type="radio" name="para" id="comer" class="mx-1" checked onchange="creaTorta()">
-                        <label for="comer" class="me-3 mb-0">Comer aquí</label>
-
-                        <input type="radio" name="para" id="llevar" class="mx-2" onchange="creaTorta()">
-                        <label for="llevar" class="mb-0">Llevar</label>
+                    <div class="col-8 row mt-2">
+                        <div class="col-1">
+                            <label class="col-12 etiqueta">$</label>
+                        </div>
+                        <div class="col-10">
+                            <label class="col-12 etiqueta" id="precio_subpedido">0</label>
+                        </div>
                     </div>
                 </div>
-                <div class="mt-2 row mx-1">
-                    <h4>
-                        Solicitud
-                    </h4>
-                    <textarea class="col-9 mx-1" rows="3" readonly id="preparado"></textarea>
+                <div class="col-12 row" >
+                    <div class="col-5 row">
+                        <div class="col-7" style="padding: 0;">
+                            <label class="col-12 etiqueta">Cantidad</label>
+                        </div>
+                        <div class="col-5">
+                            <input class="col-12" type="text" name="cantidad" id="id_cantidad"
+                                style="text-align: center;" onfocusout="reformatear('id_cantidad')"
+                                onkeypress="return valideKeySinPunto(event);" value="1" oninput="creaTorta();">
+                        </div>
+                    </div>
+                    <div class="col-8 row" style="padding: 0 0 0 0;">
+                        <div class="col-2" style="padding: 0 0 0 0;">
+                            <label class="col-12 etiqueta" style="margin: 0 0 0 -5px;">Para</label>
+                        </div>
+                        <div class="col-6" style="padding: 0;">
+                            <div class="col-12 row" style="padding: 0 0 0 0;">
+                                <input class="col-3" type="radio" name="para" id="comer" checked onchange="creaTorta()"
+                                    style="margin: 0 0 0 20px;">
+                                <label class="col" for="comer" style="margin: 3px 0 0 -15px;">Comer aquí</label>
+                            </div>
+                        </div>
+                        <div class="col-4" style="padding: 0;">
+                            <div class="col-12 row" style="padding: 0;">
+                                <input class="col-3" type="radio" name="para" id="llevar" onchange="creaTorta()"
+                                    style="margin: 0 0 0 5px;">
+                                <label class="col" style="margin: 3px 0 0 0;">Llevar</label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="mt-2 container">
+                <div class="col-12 row">
+                    <div class="col-3">
+                        <label class="etiqueta col-12">
+                            Solicitud
+                        </label>
+                    </div>
+                    <div class="col-9">
+                        <textarea class="col-12" rows="3" readonly id="preparado"></textarea>
+                    </div>
+                </div>
+                <div class="col-12">
                     <div class="row">
                         <div class="col-4 border" style="padding: 0;">
                             <div class="titulo-columna b5">Tortas</div>
@@ -92,7 +115,7 @@
                             <div class="col" style="overflow: auto; height: 184px;">
                                 {% for ingrediente in ingredientes %}
                                 <input class="form-check-input" type="checkbox" style="margin-left: -12px;"
-                                    value="{{ ingrediente.precio }}" id="id_{{ ingrediente.nombre }}" 
+                                    value="{{ ingrediente.precio }}" id="id_{{ ingrediente.nombre }}"
                                     name="ingrediente_{{ ingrediente.id }}" onchange="creaTorta()"
                                     data-tipo="{{ ingrediente.tipo }}">
                                 <label for="id_{{ ingrediente.nombre }}"
@@ -128,7 +151,7 @@
                 </div>
             </div>
         </div>
-        <table hidden id="precioTabla"> 
+        <table hidden id="precioTabla">
             <tbody>
                 {% for precio in precioingredientes %}
                 <tr>
