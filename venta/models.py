@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
@@ -23,6 +24,16 @@ TIPO_INGREDIENTE = (
     (0, 'Normal'),
     (1, 'Especial'),
 )
+
+class Llave(models.Model):
+    token = models.UUIDField(default=uuid.uuid4, editable=False)
+    activo = models.BooleanField('Activo', default=True)
+
+    class Meta:
+            verbose_name = 'Tokens'
+            verbose_name_plural = 'Token'
+            unique_together = ['token']
+            db_table = 'Llave'
 
 class Ingrediente(models.Model, PermissionRequiredMixin):
     nombre = models.CharField("Ingrediente", max_length=100)
