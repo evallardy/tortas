@@ -317,9 +317,10 @@ def accion_torta(request):
             pedidos_solicitados = Pedido.objects.filter(activo=1).values()
             data = {'pedidos_solicitados': list(pedidos_solicitados),}
         else:
-            pedidos_para_entrega = Pedido.objects.filter(activo=2).values()
-            data = {'pedidos_para_entrega': list(pedidos_para_entrega)}
-        
+            if activo == '3' or activo == '10':
+                pedidos_para_entrega = Pedido.objects.filter(activo=2).values()
+                data = {'pedidos_para_entrega': list(pedidos_para_entrega)}        
+
         return JsonResponse(data)
 
     return JsonResponse({'error': 'No se recibió una solicitud POST'}, status=400)
