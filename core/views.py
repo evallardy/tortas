@@ -2,16 +2,50 @@ from django.views import View
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView,TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import JsonResponse
 from django.core import serializers
 from django.db import transaction
 from django.views.decorators.http import require_POST
+from django.db.models import Sum
+from django.utils.timezone import localdate
 
 from venta.models import *
 from core.forms import *
+
+def tortas_pago(request, pk):
+    tortas = Pedido.objects.filter(pago=pk).values('cantidad', 'solicitud', 'precio')
+    lista = list(tortas)
+    return JsonResponse(lista, safe=False)
+
+
+class ReportePagosView(TemplateView):
+    template_name = 'core/reporte_pagos.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Obtener todas las fechas únicas del campo created
+        fechas = Pagos.objects.dates('created', 'day', order='DESC')
+        context['fechas'] = fechas
+
+        # Obtener fecha seleccionada por GET o usar la más reciente
+        fecha_seleccionada = self.request.GET.get('fecha')
+        if fecha_seleccionada:
+            registros = Pagos.objects.filter(created__date=fecha_seleccionada)
+        elif fechas:
+            fecha_seleccionada = fechas[0].strftime('%Y-%m-%d')
+            registros = Pagos.objects.filter(created__date=fecha_seleccionada)
+        else:
+            registros = []
+
+        context['fecha_seleccionada'] = fecha_seleccionada
+        context['registros'] = registros
+        context['total_importe_real'] = registros.aggregate(total=Sum('importe_real'))['total'] or 0
+        context['total_importe'] = registros.aggregate(total=Sum('importe'))['total'] or 0
+        context['total_tortas'] = registros.aggregate(total=Sum('cantidad_torta'))['total'] or 0
+        return context
 
 class PrecioTortasListView(ListView):
     model = PrecioTortasIngredientes
@@ -172,8 +206,11 @@ class PideNegocio(View):
         with transaction.atomic():
             for torta, valor in zip(tortas, valores):
                 valorNumerico = valor.replace(',','')
+                partes = torta.split('-')
+                cantidad = partes[0].strip()
                 nuevo_pedido = Pedido.objects.create(
                     nombre=nombre,
+                    cantidad=cantidad,
                     solicitud=torta,
                     precio=valorNumerico,
                     activo=1,
@@ -210,14 +247,23 @@ class PideCliente(View):
         with transaction.atomic():
             for torta, valor in zip(tortas, valores):
                 valorNumerico = valor.replace(',','')
+                partes = torta.split('-')
+                cantidad = partes[0].strip()
                 nuevo_pedido = Pedido.objects.create(
                     nombre=nombre,
+                    cantidad=cantidad,
                     solicitud=torta,
                     precio=valorNumerico,
+                    activo=1,
                 )
                 # Aquí puedes guardar en la base de datos si es necesario
 
         return redirect('pide_cliente')    
+
+def ingredientes_torta(request, pk):
+    torta = Torta.objects.get(pk=pk)
+    ingredientes = torta.ingredientes.filter(activo=True).values('nombre', 'tipo')
+    return JsonResponse(list(ingredientes), safe=False)
 
 class VerificaCliente(View):
     template_name = 'core/verificaCliente.html'
@@ -288,19 +334,28 @@ def paga_torta(request):
 
         with transaction.atomic():
             pago = Pagos.objects.create(
-                importe=importe,
+                importe_real=importe,
             )
 
-            detalles = []
+            cantidad_total = 0
+            pago_total = 0
 
             for item in pagos:
-                clave, paga = item.split('|')
+                clave, paga, cantidad = item.split('|')
 
                 pedido = Pedido.objects.get(id=clave)
                 pedido.activo = 3
-                pago=pago
-
+                pedido.pago = pago
                 pedido.save()
+
+                cantidad_total += int(cantidad)
+                pago_total += float(paga)
+
+            
+            pago.cantidad_torta = cantidad_total
+            pago.importe = pago_total
+
+            pago.save()
 
 
     url = reverse('entrega')

@@ -117,11 +117,24 @@
                                 <div class="titulo-columna b5">Tortas</div>
                                 <div class="col" style="overflow: auto; height: 184px;">
                                     {% for torta in tortas %}
-                                    <input class="form-check-input" type="radio" style="margin-left: -12px;"
-                                        value="{{ torta.precio }}" id="id_{{ torta.nombre|slugify }}" name="torta" 
-                                        {% if torta.nombre == ' Ninguna' %} checked {% endif %} onchange="creaTorta()">
-                                    <label for="id_{{ torta.nombre|slugify }}"
-                                        style="margin-left: 5px;">{{torta.nombre}}</label><br>
+                                    <table class="col" style="text-align: left; margin-left: 10px;">
+                                        <tbody>
+                                            <tr class="align-middle">
+                                                <td class="col-5" style="padding: 0;">
+                                                    <input class="form-check-input" type="radio" 
+                                                    value="{{ torta.precio }}" id="id_{{ torta.nombre|slugify }}" name="torta" 
+                                                    {% if torta.nombre == ' Ninguna' %} checked {% endif %} onchange="creaTorta()">
+                                                    <span style="cursor: pointer; color: blue;" 
+                                                        {% if torta.nombre != ' Ninguna' %}
+                                                            onclick="verIngredientes({{torta.id}})
+                                                        {% endif %}
+                                                        ">
+                                                        <label for="id_{{ torta.nombre|slugify }}">{{torta.nombre}}</label><br>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -181,7 +194,41 @@
     </div>
     {% endif %}
 </div>
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="ingredientesModal" aria-hidden="true" aria-labelledby="ingredientesModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ingredientesModalLabel">Ingredientes de la Torta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="ingredientesLista">
+                <!-- Se insertarán los ingredientes aquí -->
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    function verIngredientes(tortaId) {
+        fetch(`/ingredientes-torta/${tortaId}/`)
+            .then(response => response.json())
+            .then(data => {
+                let html = "<ul>";
+                data.forEach(item => {
+                    html += `<li><strong>${item.nombre}</strong></li>`;
+                });
+                html += "</ul>";
+                document.getElementById('ingredientesLista').innerHTML = html;
+
+                // Mostrar el modal con Bootstrap 5
+                let modal = new bootstrap.Modal(document.getElementById('ingredientesModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al cargar ingredientes:', error);
+                alert('Ocurrió un error al cargar los ingredientes.');
+            });
+    }
     {% block inicio %}
         $('.boton_5').addClass('active');
     {% endblock %}

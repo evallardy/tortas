@@ -59,6 +59,22 @@ class Torta(models.Model, PermissionRequiredMixin):
     def __str__(self):   # para poner los nombres en los renglones
         return '%s' % (self.nombre)
 
+class Pagos(models.Model, PermissionRequiredMixin):
+    cantidad_torta = models.IntegerField("Tortas", default=1)
+    importe = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
+    importe_real = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
+    created = models.DateTimeField("Creado", auto_now_add=True)
+    modified = models.DateTimeField("Actualizado", auto_now=True)
+
+    class Meta:
+        verbose_name = 'Pago'
+        verbose_name_plural = 'Pagos'
+        ordering = ['-created']
+        db_table = 'Pagos' 
+
+    def __str__(self):   
+        return '%s' % (self.importe)
+
 class Pedido(models.Model, PermissionRequiredMixin):
     nombre = models.CharField("Nombre", max_length=255, null=True, blank=True)
     solicitud = models.JSONField("Torta", null=True, blank=True)
@@ -69,6 +85,7 @@ class Pedido(models.Model, PermissionRequiredMixin):
     cantidad = models.IntegerField("Cantidad", default=0)
     precio = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
     activo = models.IntegerField('Activo', choices=ESTATUS_TORTA , default=0)
+    pago = models.ForeignKey(Pagos, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField("Creado", auto_now_add=True)
     modified = models.DateTimeField("Actualizado", auto_now=True)
 
@@ -97,26 +114,11 @@ class Adicional(models.Model, PermissionRequiredMixin):
     def __str__(self):   # para poner los nombres en los renglones
         return '%s' % (self.nombre)
 
-class Pagos(models.Model, PermissionRequiredMixin):
-    importe = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
-    created = models.DateTimeField("Creado", auto_now_add=True)
-    modified = models.DateTimeField("Actualizado", auto_now=True)
-
-    class Meta:
-        verbose_name = 'Pago'
-        verbose_name_plural = 'Pagos'
-        ordering = ['-created']
-        db_table = 'Pagos'
-
-    def __str__(self):   
-        return '%s' % (self.importe)
-
 class PrecioTortasIngredientes(models.Model, PermissionRequiredMixin):
     especial = models.IntegerField("Especial", default=0)
     normal = models.IntegerField("Normal", default=0)
     precio = models.DecimalField("Precio", max_digits=6, decimal_places=2, default=0)
     activo = models.BooleanField('Activo', default=True)
-    pago = models.ForeignKey(Pagos, on_delete=models.CASCADE, null=True, blank=True)
     created = models.DateTimeField("Creado", auto_now_add=True)
     modified = models.DateTimeField("Actualizado", auto_now=True)
 

@@ -1,0 +1,121 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load bootstrap4 %}
+{% bootstrap_css %}
+{% block contenido %}
+{% if not user.is_authenticated %}
+<div class="col-12 mt-2"></div>
+{% else %}
+<div class="col-12 mt-2" style="padding: 0; height: 650px;">
+{% endif %}
+    {% if not user.is_authenticated %}
+    <div class="col-12 d-flex align-items-center justify-content-center">
+        <div class="mt-2">
+            <img src="{% static 'core/img/Torta.jpg' %}" class="imagen-principal" style="width: 200px;">
+        </div>
+    </div>
+    {% else %}
+    <div class="mt-2 col-12" style="padding: 0; background-color: transparent;">
+        <form method="get" class="mb-4">
+            <div class="row ">
+                <div class="col-auto etiqueta" style="padding: 8px 0 0 15px;">
+                    <label for="fecha" >Seleccione una fecha:</label>
+                </div>
+                <div class="col-auto">
+                    <select name="fecha" id="fecha" class="form-control" onchange="this.form.submit()">
+                        {% for fecha in fechas %}
+                            <option value="{{ fecha|date:'Y-m-d' }}" {% if fecha|date:'Y-m-d' == fecha_seleccionada %}selected{% endif %}>
+                                {{ fecha|date:'d/m/Y' }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <div>
+            <table class="col-12 table">
+                <thead class="text-right">
+                    <tr>
+                        <th></th>
+                        <th>Tortas</th>
+                        <th>Importe</th>
+                        <th>Importe Real</th>
+                        <th class="text-left">Pago</th>
+                    </tr>
+                </thead>
+                <tbody class="text-right">
+                    {% if total_tortas %}
+                    <tr class="etiqueta">
+                        <td>Totales</td>
+                        <td>{{ total_tortas }}</td>
+                        <td>{{ total_importe }}</td>
+                        <td>{{ total_importe_real }}</td>
+                        <td></td>
+                    </tr>
+                    {% endif %}
+                    {% for pago in registros %}
+                        <tr>
+                            <td>
+                                <span style="cursor: pointer; color: blue;" onclick="verTortas({{pago.id}})">
+                                    <img src="{% static 'core/img/detalle.svg' %}" width="20" />
+                                </span>
+                            </td>
+                            <td>{{ pago.cantidad_torta }}</td>
+                            <td>{{ pago.importe }}</td>
+                            <td>{{ pago.importe_real }}</td>
+                            <td>{{ pago.created|date:"d/m/Y H:i" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No hay pagos registrados para esta fecha.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<!-- Modal Bootstrap -->
+<div class="modal fade" id="tortasModal" aria-hidden="true" aria-labelledby="tortasModalLabel" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tortasModalLabel">Tortas del pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="tortasLista">
+                <!-- Se insertarán los tortas aquí -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function verTortas(pagoId) {
+        fetch(`/tortas-pago/${pagoId}/`)
+            .then(response => response.json())
+            .then(data => {
+                let html = "<ul>";
+                data.forEach(item => {
+                    html += `<li>($ ${item.precio})  <strong>${item.solicitud}</strong></li>`;
+                });
+                html += "</ul>";
+                document.getElementById('tortasLista').innerHTML = html;
+
+                // Mostrar el modal con Bootstrap 5
+                let modal = new bootstrap.Modal(document.getElementById('tortasModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al cargar tortas:', error);
+                alert('Ocurrió un error al cargar las tortas.');
+            });
+    }
+
+    {% block inicio %}
+        $('.boton_6').addClass('active');
+    {% endblock %}
+</script>
+{% endblock %}

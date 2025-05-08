@@ -35,7 +35,7 @@
     {% endblock %}
 </head>
 
-<body style="background-color: darkgrey;">
+<body style="background-color: darkgrey;" class="container">
     <div>
         <div class="mapa" style="background-color: #0d6efd;">
             <table style="background-color: transparent;">
@@ -91,13 +91,16 @@
             </table>
         </div>
         {% if user.is_authenticated %}
-        <div class="container mt-2 d-flex justify-content-center align-items-center">
-            <div class="btn-group mapa" style="background-color: #0d6efd;">
+        <div class="container row mt-2 d-flex justify-content-center align-items-center">
+            <div class="col-12 btn-group mapa" style="background-color: #0d6efd;">
+                <a href="{% url 'catalogo' %}" class="btn btn-primary boton_4">Catálogos</a>
+            </div>
+            <div class="col-12 btn-group mapa" style="background-color: #0d6efd;">
                 <a href="{% url 'elabora' %}" class="btn btn-primary boton_1">Elabora</a>
                 <a href="{% url 'verifica_cliente' %}" class="btn btn-primary boton_2">Confirma</a>
                 <a href="{% url 'pide_negocio' %}" class="btn btn-primary boton_5">Pedir</a>
                 <a href="{% url 'entrega' %}" class="btn btn-primary boton_3">Entregar</a>
-                <a href="{% url 'catalogo' %}" class="btn btn-primary boton_4">Catálogos</a>
+                <a href="{% url 'reporte_pagos' %}" class="btn btn-primary boton_6">Reporte</a>
             </div>
         </div>
             {% if catalogo %}

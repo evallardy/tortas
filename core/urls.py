@@ -10,6 +10,7 @@ urlpatterns = [
     path('pideNegocio', PideNegocio.as_view(), name='pide_negocio'),
 #    path('pedir', Pedir.as_view(), name='pedir'),
     path('pideCliente', PideCliente.as_view(), name='pide_cliente'),
+    path('ingredientes-torta/<int:pk>/', ingredientes_torta, name='ingredientes_torta'),
     path('verificaCliente', VerificaCliente.as_view(), name='verifica_cliente'),
     path('eliminaPedido/', eliminaPedido, name='elimina_pedido'),
     path('confirmadoPedido/', confirmadoPedido, name='confirmado_pedido'),
@@ -38,4 +39,7 @@ urlpatterns = [
     path('precios/nuevo/', PrecioTortasCreateView.as_view(), name='precio_create'),
     path('precios/<int:pk>/editar/', PrecioTortasUpdateView.as_view(), name='precio_update'),
     path('precios/<int:pk>/eliminar/', PrecioTortasDeleteView.as_view(), name='precio_delete'),
+
+    path('reporte_pagos/', ReportePagosView.as_view(), name='reporte_pagos'),
+    path('tortas-pago/<int:pk>/', tortas_pago, name='tortas_pago'),
 ]
