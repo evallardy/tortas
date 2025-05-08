@@ -61,30 +61,47 @@
                             $<label id="precio_subpedido" style="margin-top: 20px; padding: 0; margin-left: 25px;">0</label>
                         </h3>
                     </div>
-                    <div class="col-12 row mx-1" style="height: 25px;">
-                        <div class="col-5 d-flex align-items-center">
-                            <label class="col-6 mb-0 etiqueta" style="padding-left: 0; margin-left: -5px;">Cantidad</label>
-                            <input type="text" name="cantidad" id="id_cantidad"
-                                style="width: 50px; margin-left: 5px; text-align: center;"
-                                onfocusout="reformatear('id_cantidad')" onkeypress="return valideKeySinPunto(event);" value="1"
-                                oninput="creaTorta();">
-                        </div>
-                        <div class="col-7 d-flex align-items-center">
-                            <label class="me-2 mb-0 etiqueta">Para</label>
-
-                            <input type="radio" name="para" id="comer" class="mx-1" checked onchange="creaTorta()">
-                            <label for="comer" class="me-3 mb-0">Comer aquí</label>
-
-                            <input type="radio" name="para" id="llevar" class="mx-2" onchange="creaTorta()">
-                            <label for="llevar" class="mb-0">Llevar</label>
-                        </div>
-                    </div>
-                    <div class="mt-2 row mx-1">
-                        <h4>
-                            Solicitud
-                        </h4>
-                        <textarea class="col-9 mx-1" rows="3" readonly id="preparado"></textarea>
-                    </div>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="vertical-align: middle;">
+                                    <label class="etiqueta">Cantidad</label>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <input type="text" name="cantidad" id="id_cantidad"
+                                        style="text-align: center; width: 40px;" onfocusout="reformatear('id_cantidad')"
+                                        onkeypress="return valideKeySinPunto(event);" value="1" oninput="creaTorta();">
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <label class="etiqueta">Para</label>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <input type="radio" name="para" id="comer" checked onchange="creaTorta()">
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <label for="comer">Comer aquí</label>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <input type="radio" name="para" id="llevar" onchange="creaTorta()">
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <label>Llevar</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                
+                    <table class="col-12">
+                        <tbody>
+                            <tr class="col-12">
+                                <td class="col-2">
+                                    <label for="preparado" class="etiqueta">Solicitud</label>
+                                </td>
+                                <td class="col-10">
+                                    <textarea class="col-12" rows="3" readonly id="preparado"></textarea>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                     <div class="mt-2 container">
                         <div class="row">
                             <div class="col-4 border" style="padding: 0;">
