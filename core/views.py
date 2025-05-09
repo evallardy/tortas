@@ -86,11 +86,11 @@ class SolicitarTortaView(View):
                     cantidad=cantidad,
                     solicitud=torta,
                     precio=valorNumerico,
-                    activo=1,
+                    activo=0,
                 )
                 # Aquí puedes guardar en la base de datos si es necesario
-
-        return redirect(f"{reverse('solicitar_torta', kwargs={'token': token})}")
+        return redirect(reverse('solicitar_torta', kwargs={'token': token}))
+#        return redirect(f"{reverse('solicitar_torta', kwargs={'token': token})}")
     
 def tortas_pago(request, pk):
     tortas = Pedido.objects.filter(pago=pk).values('cantidad', 'solicitud', 'precio')
@@ -344,7 +344,7 @@ class PideCliente(View):
                     cantidad=cantidad,
                     solicitud=torta,
                     precio=valorNumerico,
-                    activo=1,
+                    activo=0,
                 )
                 # Aquí puedes guardar en la base de datos si es necesario
 
