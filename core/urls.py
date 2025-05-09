@@ -44,5 +44,5 @@ urlpatterns = [
     path('tortas-pago/<int:pk>/', tortas_pago, name='tortas_pago'),
 
     path('presenta_qr/', PresentaQRView.as_view(), name='presenta_qr'),
-    path('solicitar/<uuid:token>/', SolicitarTortaView.as_view(), name='solicitar_musica'),
+    path('solicitar/<uuid:token>/', SolicitarTortaView.as_view(), name='solicitar_torta'),
 ]

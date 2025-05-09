@@ -70,7 +70,7 @@ class SolicitarTortaView(View):
 
         return render(request, self.template_name, context)
     
-    def post(self, request):
+    def post(self, request, token):
         tortas = request.POST.getlist('torta[]')
         valores = request.POST.getlist('valor[]')
         nombre = request.POST.get('nombre')
@@ -90,7 +90,7 @@ class SolicitarTortaView(View):
                 )
                 # Aquí puedes guardar en la base de datos si es necesario
 
-        return redirect('pide_cliente')    
+        return redirect(f"{reverse('solicitar_torta', kwargs={'token': token})}")
     
 def tortas_pago(request, pk):
     tortas = Pedido.objects.filter(pago=pk).values('cantidad', 'solicitud', 'precio')
